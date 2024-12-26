@@ -28,6 +28,10 @@
     "linkUrl": {
       "type": "string",
       "default": "#"
+    },
+    "tiles": {
+      "type": "array",
+      "default": []
     }
   }
 }

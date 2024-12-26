@@ -1,24 +1,34 @@
-/**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- */
-import { useBlockProps } from '@wordpress/block-editor';
+// save.js
+import { useBlockProps } from "@wordpress/block-editor";
+import { __ } from "@wordpress/i18n";
 
-/**
- * The save function defines the way in which the different attributes should
- * be combined into the final markup, which is then serialized by the block
- * editor into `post_content`.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
- *
- * @return {Element} Element to render.
- */
-export default function save() {
+export default function save({ attributes }) {
+	const { tiles } = attributes;
+
 	return (
-		<p { ...useBlockProps.save() }>
-			{ 'Pr Tuile – hello from the saved content!' }
-		</p>
+		<div className="pr-tuile-container" {...useBlockProps.save()}>
+			{tiles.map((tile, index) => (
+				<a
+					key={index}
+					className="pr-tuile-lien"
+					href={tile.linkUrl}
+					rel="noopener noreferrer"
+				>
+					{tile.showImage && (
+						<div className="pr-tuile-lien-image">
+							<img
+								src={tile.imageUrl || "https://placecats.com/520/300"}
+								alt={tile.imageAlt || __("")}
+								loading="lazy"
+							/>
+						</div>
+					)}
+					<div className="pr-tuile-lien-text">
+						<h3>{tile.titleField}</h3>
+						<p>{tile.textField}</p>
+					</div>
+				</a>
+			))}
+		</div>
 	);
 }

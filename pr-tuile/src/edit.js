@@ -53,105 +53,145 @@ import { useEffect } from "react";
  * @return {Element} Element to render.
  */
 
+import { MediaUpload } from "@wordpress/block-editor";
+import { Button } from "@wordpress/components";
+
 export default function Edit({ attributes, setAttributes }) {
-	const { titleField, textField, linkUrl } = attributes;
+	const { tiles } = attributes;
 
-	function onChangeTitleField(newValue) {
-		setAttributes({ titleField: newValue });
+	// Ajouter une nouvelle tuile
+	function addTile() {
+		setAttributes({
+			tiles: [
+				...tiles,
+				{ titleField: "", textField: "", linkUrl: "", imageUrl: "" },
+			],
+		});
 	}
 
-	function onChangeTextField(newValue) {
-		setAttributes({ textField: newValue });
+	// Supprimer une tuile
+	function removeTile(index) {
+		const newTiles = [...tiles];
+		newTiles.splice(index, 1);
+		setAttributes({ tiles: newTiles });
 	}
 
-	function onChangelinkUrl(newValue) {
-		setAttributes({ linkUrl: newValue });
+	// Mettre à jour une tuile
+	function updateTile(index, field, value) {
+		const newTiles = [...tiles];
+		newTiles[index][field] = value;
+		setAttributes({ tiles: newTiles });
 	}
 
 	return (
 		<>
 			<InspectorControls>
 				<PanelBody title={__("Settings", "block-development-examples")}>
-					<TextControl
-						label="Titre"
-						help="Phrase d'un maxium de 25 caractères"
-						value={titleField}
-						onChange={onChangeTitleField}
-					/>
-					<TextControl
-						label="Text"
-						help="Phrase d'un maxium de 180 caractères"
-						value={textField}
-						onChange={onChangeTextField}
-					/>
-					<TextControl
-						label={__("URL du lien", "block-development-examples")}
-						help={__("Entrez l'URL de la destination du lien")}
-						value={linkUrl}
-						onChange={onChangelinkUrl}
-					/>
+					{tiles.map((tile, index) => (
+						<div key={index} style={{ marginBottom: "20px" }}>
+							<TextControl
+								label={`Titre ${index + 1}`}
+								help="Phrase d'un maximum de 25 caractères"
+								value={tile.titleField}
+								onChange={(value) => updateTile(index, "titleField", value)}
+							/>
+							<TextControl
+								label={`Texte ${index + 1}`}
+								help="Phrase d'un maximum de 180 caractères"
+								value={tile.textField}
+								onChange={(value) => updateTile(index, "textField", value)}
+							/>
+							<TextControl
+								label={__("URL du lien", "block-development-examples")}
+								help={__("Entrez l'URL de la destination du lien")}
+								value={tile.linkUrl}
+								onChange={(value) => updateTile(index, "linkUrl", value)}
+							/>
+							<ToggleControl
+								label={__("Afficher l'image", "block-development-examples")}
+								checked={tile.showImage}
+								onChange={(value) => updateTile(index, "showImage", value)}
+							/>
+							{tile.showImage && (
+								<>
+									<MediaUpload
+										onSelect={(media) => {
+											updateTile(index, "imageUrl", media.url);
+											updateTile(index, "imageAlt", media.alt);
+										}}
+										allowedTypes={["image"]}
+										value={tile.imageUrl}
+										render={({ open }) => (
+											<Button
+												onClick={open}
+												variant="secondary"
+												style={{
+													display: "block",
+													marginBottom: "10px",
+												}}
+											>
+												{tile.imageUrl
+													? "Changer l'image"
+													: "Choisir une image"}
+											</Button>
+										)}
+									/>
+									{tile.imageUrl && (
+										<img
+											src={tile.imageUrl}
+											alt={tile.imageAlt || `Image ${index + 1}`}
+											style={{ maxWidth: "100%", height: "auto" }}
+										/>
+									)}
+								</>
+							)}
+							<button
+								style={{
+									background: "red",
+									color: "white",
+									border: "none",
+									padding: "5px 10px",
+									cursor: "pointer",
+								}}
+								onClick={() => removeTile(index)}
+							>
+								Supprimer
+							</button>
+						</div>
+					))}
+					<button
+						style={{
+							background: "green",
+							color: "white",
+							border: "none",
+							padding: "10px 15px",
+							cursor: "pointer",
+							marginTop: "20px",
+						}}
+						onClick={addTile}
+					>
+						Ajouter une tuile
+					</button>
 				</PanelBody>
 			</InspectorControls>
 			<div class="pr-tuile-container" {...useBlockProps()}>
-				<a class="pr-tuile-lien" href={linkUrl}>
-					<div class="pr-tuile-lien-image">
-						<img src="https://placecats.com/520/300" alt="Chat" />
-					</div>
-					<div class="pr-tuile-lien-text">
-						<h3>{titleField}</h3>
-						<p>{textField}</p>
-					</div>
-				</a>
+				{tiles.map((tile, index) => (
+					<a key={index} class="pr-tuile-lien" href={tile.linkUrl}>
+						{tile.showImage && (
+							<div class="pr-tuile-lien-image">
+								<img
+									src={tile.imageUrl || "https://placecats.com/520/300"}
+									alt={tile.imageAlt || ""}
+								/>
+							</div>
+						)}
+						<div class="pr-tuile-lien-text">
+							<h3>{tile.titleField}</h3>
+							<p>{tile.textField}</p>
+						</div>
+					</a>
+				))}
 			</div>
 		</>
 	);
 }
-
-// export default function Edit() {
-// 	return (
-// 		<div class="pr-tuile-container">
-// 			<a class="pr-tuile-lien" href="#">
-// 				<div class="pr-tuile-lien-image">
-// 					<img src="https://placecats.com/520/300" alt="Chat" />
-// 				</div>
-// 				<div class="pr-tuile-lien-text">
-// 					<h3>Title</h3>
-// 					<p>
-// 						Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-// 						necessitatibus, fugiat eum corporis repudiandae voluptas suscipit
-// 						totam unde vero recusandae iure quo nisi ex veniam officia ut nemo
-// 						optio reiciendis autem rerum quaerat labore delectus aperiam.
-// 					</p>
-// 				</div>
-// 			</a>
-// 			<a class="pr-tuile-lien" href="#">
-// 				<div class="pr-tuile-lien-image">
-// 					<img src="https://placecats.com/520/300" alt="Chat" />
-// 				</div>
-// 				<div class="pr-tuile-lien-text">
-// 					<h3>Title</h3>
-// 					<p>
-// 						Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-// 						necessitatibus, fugiat eum corporis repudiandae voluptas suscipit
-// 						totam unde vero recusandae iure quo nisi ex veniam officia ut nemo
-// 						optio reiciendis autem rerum quaerat labore delectus aperiam.
-// 					</p>
-// 				</div>
-// 			</a>
-// 			<a class="pr-tuile-lien" href="#">
-// 				<div class="pr-tuile-lien-image">
-// 					<img src="https://placecats.com/520/300" alt="Chat" />
-// 				</div>
-// 				<div class="pr-tuile-lien-text">
-// 					<h3>Title</h3>
-// 					<p>
-// 						Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-// 						necessitatibus, fugiat eum corporis repudiandae voluptas suscipit
-// 						totam unde vero recusandae iure quo nisi ex veniam officia ut nemo
-// 						optio reiciendis autem rerum quaerat labore delectus aperiam.
-// 					</p>
-// 				</div>
-// 			</a>
-// 		</div>
-// 	);
-// }

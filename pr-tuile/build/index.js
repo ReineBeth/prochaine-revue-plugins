@@ -77,124 +77,148 @@ __webpack_require__.r(__webpack_exports__);
  * @return {Element} Element to render.
  */
 
+
+
+
 function Edit({
   attributes,
   setAttributes
 }) {
   const {
-    titleField,
-    textField,
-    linkUrl
+    tiles
   } = attributes;
-  function onChangeTitleField(newValue) {
+
+  // Ajouter une nouvelle tuile
+  function addTile() {
     setAttributes({
-      titleField: newValue
+      tiles: [...tiles, {
+        titleField: "",
+        textField: "",
+        linkUrl: "",
+        imageUrl: ""
+      }]
     });
   }
-  function onChangeTextField(newValue) {
+
+  // Supprimer une tuile
+  function removeTile(index) {
+    const newTiles = [...tiles];
+    newTiles.splice(index, 1);
     setAttributes({
-      textField: newValue
+      tiles: newTiles
     });
   }
-  function onChangelinkUrl(newValue) {
+
+  // Mettre à jour une tuile
+  function updateTile(index, field, value) {
+    const newTiles = [...tiles];
+    newTiles[index][field] = value;
     setAttributes({
-      linkUrl: newValue
+      tiles: newTiles
     });
   }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Settings", "block-development-examples"),
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-          label: "Titre",
-          help: "Phrase d'un maxium de 25 caract\xE8res",
-          value: titleField,
-          onChange: onChangeTitleField
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-          label: "Text",
-          help: "Phrase d'un maxium de 180 caract\xE8res",
-          value: textField,
-          onChange: onChangeTextField
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("URL du lien", "block-development-examples"),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Entrez l'URL de la destination du lien"),
-          value: linkUrl,
-          onChange: onChangelinkUrl
+        children: [tiles.map((tile, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+          style: {
+            marginBottom: "20px"
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+            label: `Titre ${index + 1}`,
+            help: "Phrase d'un maximum de 25 caract\xE8res",
+            value: tile.titleField,
+            onChange: value => updateTile(index, "titleField", value)
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+            label: `Texte ${index + 1}`,
+            help: "Phrase d'un maximum de 180 caract\xE8res",
+            value: tile.textField,
+            onChange: value => updateTile(index, "textField", value)
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("URL du lien", "block-development-examples"),
+            help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Entrez l'URL de la destination du lien"),
+            value: tile.linkUrl,
+            onChange: value => updateTile(index, "linkUrl", value)
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Afficher l'image", "block-development-examples"),
+            checked: tile.showImage,
+            onChange: value => updateTile(index, "showImage", value)
+          }), tile.showImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
+              onSelect: media => {
+                updateTile(index, "imageUrl", media.url);
+                updateTile(index, "imageAlt", media.alt);
+              },
+              allowedTypes: ["image"],
+              value: tile.imageUrl,
+              render: ({
+                open
+              }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+                onClick: open,
+                variant: "secondary",
+                style: {
+                  display: "block",
+                  marginBottom: "10px"
+                },
+                children: tile.imageUrl ? "Changer l'image" : "Choisir une image"
+              })
+            }), tile.imageUrl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+              src: tile.imageUrl,
+              alt: tile.imageAlt || `Image ${index + 1}`,
+              style: {
+                maxWidth: "100%",
+                height: "auto"
+              }
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+            style: {
+              background: "red",
+              color: "white",
+              border: "none",
+              padding: "5px 10px",
+              cursor: "pointer"
+            },
+            onClick: () => removeTile(index),
+            children: "Supprimer"
+          })]
+        }, index)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+          style: {
+            background: "green",
+            color: "white",
+            border: "none",
+            padding: "10px 15px",
+            cursor: "pointer",
+            marginTop: "20px"
+          },
+          onClick: addTile,
+          children: "Ajouter une tuile"
         })]
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
       class: "pr-tuile-container",
       ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)(),
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("a", {
+      children: tiles.map((tile, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("a", {
         class: "pr-tuile-lien",
-        href: linkUrl,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+        href: tile.linkUrl,
+        children: [tile.showImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
           class: "pr-tuile-lien-image",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
-            src: "https://placecats.com/520/300",
-            alt: "Chat"
+            src: tile.imageUrl || "https://placecats.com/520/300",
+            alt: tile.imageAlt || ""
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
           class: "pr-tuile-lien-text",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h3", {
-            children: titleField
+            children: tile.titleField
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
-            children: textField
+            children: tile.textField
           })]
         })]
-      })
+      }, index))
     })]
   });
 }
-
-// export default function Edit() {
-// 	return (
-// 		<div class="pr-tuile-container">
-// 			<a class="pr-tuile-lien" href="#">
-// 				<div class="pr-tuile-lien-image">
-// 					<img src="https://placecats.com/520/300" alt="Chat" />
-// 				</div>
-// 				<div class="pr-tuile-lien-text">
-// 					<h3>Title</h3>
-// 					<p>
-// 						Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-// 						necessitatibus, fugiat eum corporis repudiandae voluptas suscipit
-// 						totam unde vero recusandae iure quo nisi ex veniam officia ut nemo
-// 						optio reiciendis autem rerum quaerat labore delectus aperiam.
-// 					</p>
-// 				</div>
-// 			</a>
-// 			<a class="pr-tuile-lien" href="#">
-// 				<div class="pr-tuile-lien-image">
-// 					<img src="https://placecats.com/520/300" alt="Chat" />
-// 				</div>
-// 				<div class="pr-tuile-lien-text">
-// 					<h3>Title</h3>
-// 					<p>
-// 						Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-// 						necessitatibus, fugiat eum corporis repudiandae voluptas suscipit
-// 						totam unde vero recusandae iure quo nisi ex veniam officia ut nemo
-// 						optio reiciendis autem rerum quaerat labore delectus aperiam.
-// 					</p>
-// 				</div>
-// 			</a>
-// 			<a class="pr-tuile-lien" href="#">
-// 				<div class="pr-tuile-lien-image">
-// 					<img src="https://placecats.com/520/300" alt="Chat" />
-// 				</div>
-// 				<div class="pr-tuile-lien-text">
-// 					<h3>Title</h3>
-// 					<p>
-// 						Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
-// 						necessitatibus, fugiat eum corporis repudiandae voluptas suscipit
-// 						totam unde vero recusandae iure quo nisi ex veniam officia ut nemo
-// 						optio reiciendis autem rerum quaerat labore delectus aperiam.
-// 					</p>
-// 				</div>
-// 			</a>
-// 		</div>
-// 	);
-// }
 
 /***/ }),
 
@@ -274,30 +298,43 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- */
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
+// save.js
 
 
-/**
- * The save function defines the way in which the different attributes should
- * be combined into the final markup, which is then serialized by the block
- * editor into `post_content`.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
- *
- * @return {Element} Element to render.
- */
 
-function save() {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
+function save({
+  attributes
+}) {
+  const {
+    tiles
+  } = attributes;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: "pr-tuile-container",
     ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save(),
-    children: 'Pr Tuile – hello from the saved content!'
+    children: tiles.map((tile, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("a", {
+      className: "pr-tuile-lien",
+      href: tile.linkUrl,
+      rel: "noopener noreferrer",
+      children: [tile.showImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "pr-tuile-lien-image",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
+          src: tile.imageUrl || "https://placecats.com/520/300",
+          alt: tile.imageAlt || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)(""),
+          loading: "lazy"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "pr-tuile-lien-text",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h3", {
+          children: tile.titleField
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+          children: tile.textField
+        })]
+      })]
+    }, index))
   });
 }
 
@@ -381,7 +418,7 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/pr-tuile","version":"0.1.0","title":"Tuiles","category":"widgets","icon":"smiley","description":"Tuiles liens qui mène vers une page article ou autres","example":{},"supports":{"html":false},"textdomain":"pr-tuile","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","attributes":{"titleField":{"type":"string","default":""},"textField":{"type":"string","default":""},"linkUrl":{"type":"string","default":"#"}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/pr-tuile","version":"0.1.0","title":"Tuiles","category":"widgets","icon":"smiley","description":"Tuiles liens qui mène vers une page article ou autres","example":{},"supports":{"html":false},"textdomain":"pr-tuile","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","attributes":{"titleField":{"type":"string","default":""},"textField":{"type":"string","default":""},"linkUrl":{"type":"string","default":"#"},"tiles":{"type":"array","default":[]}}}');
 
 /***/ })
 
