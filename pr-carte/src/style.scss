@@ -1,0 +1,61 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+ .pr-carte-container
+ .wp-block-create-block-pr-carte {
+	 display: flex;
+	 flex-wrap: wrap;
+	 gap: 24px;
+ }
+
+.pr-carte {
+	border-radius: 10px;
+	border: 3px solid #92d16e;
+	width: 100%;
+	max-width: calc((100% / 3) - 24px);
+	overflow: hidden;
+	box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+	transition:
+		transform ease 0.5s,
+		box-shadow ease 0.5s;
+	text-decoration: none;
+	color: #232222;
+	text-align: center;
+	padding: 25px;
+	width: 270px;
+	height: 350px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+
+	&-titre {
+		font-size: 28px;
+		margin-bottom: 8px;
+	}
+
+	&-soustitre {
+		font-size: 18px;
+		font-family: 'Raleway';
+		margin-top: 0;
+	}
+
+	&-image {
+		width: 150px;
+		height: 150px;
+		border-radius: 100%;
+		border: 3px solid #3A5A40;
+		object-fit: cover;
+		object-position: center center;
+	}
+
+	&-icon {
+		display: flex;
+		justify-content: flex-end;
+		fill: #478245;
+	}
+}
+
