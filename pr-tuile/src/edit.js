@@ -181,7 +181,7 @@ export default function Edit({ attributes, setAttributes }) {
 							<div class="pr-tuile-lien-image">
 								<img
 									src={tile.imageUrl || "https://placecats.com/520/300"}
-									alt={tile.imageAlt || ""}
+									alt={tile.imageAlt || `Image ${index + 1}`}
 								/>
 							</div>
 						)}

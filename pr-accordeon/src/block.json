@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "create-block/pr-accordeon",
+	"version": "0.1.0",
+	"title": "Pr Accordeon",
+	"category": "widgets",
+	"icon": "smiley",
+	"description": "Accordéon bloc ouvrable / fermable contenant du texte",
+	"example": {},
+	"supports": {
+		"html": false,
+		"innerBlocks": true
+	},
+	"textdomain": "pr-accordeon",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"attributes": {
+		"titleField": {
+			"type": "string",
+			"default": ""
+		}
+	}
+}
