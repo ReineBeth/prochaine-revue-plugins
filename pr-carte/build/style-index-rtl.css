@@ -30,6 +30,43 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  perspective: 500px;
+}
+.pr-carte-bouton {
+  cursor: pointer;
+  background: transparent;
+  outline: none;
+  border: none;
+}
+.pr-carte-contenu {
+  transition: transform 1s;
+  transform-style: preserve-3d;
+}
+.pr-carte-front {
+  width: 270px;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.pr-carte-front .pr-carte-bouton {
+  display: flex;
+  justify-content: flex-end;
+  fill: #478245;
+}
+.pr-carte-back {
+  color: white;
+  width: 270px;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: scroll;
+}
+.pr-carte-back .pr-carte-bouton {
+  display: flex;
+  justify-content: flex-end;
+  fill: #ffffff;
 }
 .pr-carte-titre {
   font-size: 28px;

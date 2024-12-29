@@ -31,6 +31,49 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	perspective: 500px;
+
+	&-bouton {
+		cursor: pointer;
+		background: transparent;
+		outline: none;
+		border: none;
+	}
+
+	&-contenu {
+		transition: transform 1s;
+		transform-style: preserve-3d;
+	}
+
+	&-front {
+		width: 270px;
+		height: 350px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+
+
+		.pr-carte-bouton {
+			display: flex;
+			justify-content: flex-end;
+			fill: #478245;
+		}
+	}
+	&-back {
+		color: white;
+		width: 270px;
+		height: 350px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		overflow-y: scroll;
+
+		.pr-carte-bouton {
+			display: flex;
+			justify-content: flex-end;
+			fill: #ffffff;
+		}
+	}
 
 	&-titre {
 		font-size: 28px;
