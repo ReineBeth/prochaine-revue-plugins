@@ -4,8 +4,8 @@
 	"name": "create-block/pr-accordeon",
 	"version": "0.1.0",
 	"title": "Pr Accordeon",
-	"category": "widgets",
-	"icon": "smiley",
+	"category": "layout",
+	"icon": "list-view",
 	"description": "Accordéon bloc ouvrable / fermable contenant du texte",
 	"example": {},
 	"supports": {
@@ -21,6 +21,10 @@
 		"titleField": {
 			"type": "string",
 			"default": ""
+		},
+		"tiroirs": {
+			"type": "array",
+			"default": [{}]
 		}
 	}
 }

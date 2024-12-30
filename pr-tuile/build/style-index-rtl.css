@@ -13,7 +13,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 24px;
-    justify-content: center;
+    justify-content: space-between;
   }
 }
 
@@ -32,7 +32,7 @@
 @media (min-width: 900px) {
   .pr-tuile-lien {
     margin: 0 0;
-    max-width: calc(33.3333333333% - 24px);
+    flex-basis: calc(33.3333333333% - 24px);
   }
 }
 .pr-tuile-lien:hover {
