@@ -84,7 +84,7 @@ function Edit({
     setIsFlipped(!isFlipped);
   }
   const styleAnimationCarte = {
-    transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+    transform: isFlipped ? 'rotateY(-180deg)' : 'rotateY(0deg)',
     transition: 'transform 1s, background-color 0.75s',
     backgroundColor: isFlipped ? '#3A5A40' : '#ffffff',
     borderColor: isFlipped ? '#92d16e' : '#478245'
