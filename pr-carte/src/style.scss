@@ -15,13 +15,8 @@
 .pr-carte {
 	border-radius: 10px;
 	border: 3px solid #92d16e;
-	width: 100%;
-	max-width: calc((100% / 3) - 24px);
 	overflow: hidden;
 	box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
-	transition:
-		transform ease 0.5s,
-		box-shadow ease 0.5s;
 	text-decoration: none;
 	color: #232222;
 	text-align: center;
@@ -31,14 +26,7 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	perspective: 500px;
-
-	&-bouton {
-		cursor: pointer;
-		background: transparent;
-		outline: none;
-		border: none;
-	}
+	cursor: pointer;
 
 	&-contenu {
 		transition: transform 1s;
@@ -53,7 +41,7 @@
 		justify-content: space-between;
 
 
-		.pr-carte-bouton {
+		.pr-carte-icone {
 			display: flex;
 			justify-content: flex-end;
 			fill: #478245;
@@ -66,9 +54,9 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-		overflow-y: scroll;
+		text-align: left;
 
-		.pr-carte-bouton {
+		.pr-carte-icone {
 			display: flex;
 			justify-content: flex-end;
 			fill: #ffffff;
@@ -93,12 +81,6 @@
 		border: 3px solid #3A5A40;
 		object-fit: cover;
 		object-position: center center;
-	}
-
-	&-icon {
-		display: flex;
-		justify-content: flex-end;
-		fill: #478245;
 	}
 }
 
