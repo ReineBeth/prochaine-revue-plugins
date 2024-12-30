@@ -45,9 +45,11 @@ import { useState } from "react";
 
 import { InnerBlocks } from "@wordpress/block-editor"; // Ajoutez cet import
 
-export default function Edit({ attributes, setAttributes }) {
+import { v4 as uuidv4 } from "uuid";
+
+export default function Edit({ attributes, setAttributes, clientId }) {
 	const [openAccordions, setOpenAccordions] = useState({});
-	const { titleField } = attributes;
+	const { tiroirs } = attributes;
 
 	const toggleAccordeon = (accordionId) => {
 		setOpenAccordions((prev) => ({
@@ -55,6 +57,29 @@ export default function Edit({ attributes, setAttributes }) {
 			[accordionId]: !prev[accordionId],
 		}));
 	};
+
+	function addTiroir() {
+		setAttributes({
+			tiroirs: [...tiroirs, { id: uuidv4(), titleField: "" }],
+		});
+	}
+
+	function removeTiroir(index) {
+		const newTiroirs = [...tiroirs];
+		newTiroirs.splice(index, 1);
+		setAttributes({ tiroirs: newTiroirs });
+	}
+
+	function updateTiroir(index, field, value) {
+		const newTiroirs = [...tiroirs];
+		newTiroirs[index][field] = value;
+		setAttributes({ tiroirs: newTiroirs });
+	}
+
+	// Obtenir un ID unique pour chaque InnerBlocks
+	function getTiroirClientId(tiroir) {
+		return `${clientId}-tiroir-${tiroir.id}`;
+	}
 
 	// Définir les blocs autorisés - laissez vide pour autoriser tous les blocs
 	const ALLOWED_BLOCKS = null; // ou spécifiez ['core/paragraph', 'core/columns', etc.]
@@ -68,38 +93,71 @@ export default function Edit({ attributes, setAttributes }) {
 		<>
 			<InspectorControls>
 				<PanelBody title={__("Settings", "block-development-examples")}>
-					<TextControl
-						label={`Titre`}
-						help="Phrase d'un maximum de 25 caractères"
-						value={titleField}
-						onChange={(value) => setAttributes({ titleField: value })}
-					/>
+					{tiroirs.map((tiroir, index) => (
+						<div key={index} style={{ marginBottom: "20px" }}>
+							<TextControl
+								label={`Titre`}
+								help="Phrase d'un maximum de 25 caractères"
+								value={tiroir.titleField}
+								onChange={(value) => updateTiroir(index, "titleField", value)}
+							/>
+							<button
+								style={{
+									background: "red",
+									color: "white",
+									border: "none",
+									padding: "5px 10px",
+									cursor: "pointer",
+								}}
+								onClick={() => removeTiroir(index)}
+							>
+								Supprimer
+							</button>
+						</div>
+					))}
+					<button
+						style={{
+							background: "green",
+							color: "white",
+							border: "none",
+							padding: "10px 15px",
+							cursor: "pointer",
+							marginTop: "20px",
+						}}
+						onClick={addTiroir}
+					>
+						Ajouter un tiroir
+					</button>
 				</PanelBody>
 			</InspectorControls>
 			<div className="pr-accordeon">
-				<div className="pr-accordeon-container">
-					<h3>
-						<button
-							type="button"
-							aria-expanded={openAccordions["content-id-1"] || false}
-							className="pr-accordeon-trigger js-trigger"
-							aria-controls="content-id-1"
-							id="accordeon-1-id"
-							onClick={() => toggleAccordeon("content-id-1")}
+				{tiroirs.map((tiroir, index) => (
+					<div className="pr-accordeon-container" key={tiroir.id}>
+						<h3>
+							<button
+								type="button"
+								aria-expanded={
+									openAccordions[`content-id-${tiroir.id}`] || false
+								}
+								className="pr-accordeon-trigger js-trigger"
+								aria-controls={`content-id-${tiroir.id}`}
+								id={`accordeon-${tiroir.id}-id`}
+								onClick={() => toggleAccordeon(`content-id-${tiroir.id}`)}
+							>
+								{tiroir.titleField || `Tiroir ${index}`}
+							</button>
+						</h3>
+						<div
+							id={`content-id-${tiroir.id}`}
+							role="region"
+							aria-labelledby={`accordeon-${tiroir.id}-id`}
+							className="pr-accordeon-content js-content"
+							hidden={!openAccordions[`content-id-${tiroir.id}`]}
 						>
-							{titleField || "Trigger 1"}
-						</button>
-					</h3>
-					<div
-						id="content-id-1"
-						role="region"
-						aria-labelledby="accordeon-1-id"
-						className="pr-accordeon-content js-content"
-						hidden={!openAccordions["content-id-1"]}
-					>
-						<InnerBlocks allowedBlocks={ALLOWED_BLOCKS} template={TEMPLATE} />
+							<InnerBlocks allowedBlocks={ALLOWED_BLOCKS} template={TEMPLATE} />
+						</div>
 					</div>
-				</div>
+				))}
 			</div>
 		</>
 	);
