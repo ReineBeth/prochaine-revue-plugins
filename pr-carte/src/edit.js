@@ -121,7 +121,7 @@ const styleAnimationCarte = {
 				</PanelBody>
 			</InspectorControls>
 			<div class="pr-carte-container" {...useBlockProps()}>
-				<div role='button' class="pr-carte" style={styleAnimationCarte} onClick={() => toggleFlip()} >
+				<div role='button' class="pr-carte" style={styleAnimationCarte} onClick={() => toggleFlip()} aria-label={isFlipped ? ` ${textField}`  : `Apprendre plus sur ${titleField}, ${subtitleField}`} aria-live="assertive">
 					<div class="pr-carte-contenu" style={styleAnimationCarte}>
 						<div class="pr-carte-front" style={{ display: isFlipped ? 'none' : 'flex' }}>
 								<div>

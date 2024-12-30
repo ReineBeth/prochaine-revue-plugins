@@ -159,6 +159,8 @@ function Edit({
         class: "pr-carte",
         style: styleAnimationCarte,
         onClick: () => toggleFlip(),
+        "aria-label": isFlipped ? ` ${textField}` : `Apprendre plus sur ${titleField}, ${subtitleField}`,
+        "aria-live": "assertive",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
           class: "pr-carte-contenu",
           style: styleAnimationCarte,
