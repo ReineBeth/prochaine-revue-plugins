@@ -32,7 +32,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
+ * It provides all the necessary props like the className name.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
@@ -152,39 +152,39 @@ function Edit({
         })
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-      class: "pr-carte-container",
+      className: "pr-carte-container",
       ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)(),
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         role: "button",
-        class: "pr-carte",
+        className: "pr-carte",
         style: styleAnimationCarte,
         onClick: () => toggleFlip(),
         "aria-label": isFlipped ? ` ${textField}` : `Apprendre plus sur ${titleField}, ${subtitleField}`,
         "aria-live": "assertive",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-          class: "pr-carte-contenu",
+          className: "pr-carte-contenu",
           style: styleAnimationCarte,
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-            class: "pr-carte-front",
+            className: "pr-carte-front",
             style: {
               display: isFlipped ? 'none' : 'flex'
             },
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-                class: "pr-carte-bloc-image",
+                className: "pr-carte-bloc-image",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
-                  class: "pr-carte-image",
+                  className: "pr-carte-image",
                   src: imageUrl || "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h3", {
-                class: "pr-carte-titre",
+                className: "pr-carte-titre",
                 children: titleField
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
-                class: "pr-carte-soustitre",
+                className: "pr-carte-soustitre",
                 children: subtitleField
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-              class: "pr-carte-icone",
+              className: "pr-carte-icone",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("svg", {
                 width: "48",
                 height: "48",
@@ -201,14 +201,14 @@ function Edit({
               })
             })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-            class: "pr-carte-back",
+            className: "pr-carte-back",
             style: {
               display: isFlipped ? 'flex' : 'none'
             },
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("p", {
               children: [" ", textField, " "]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-              class: "pr-carte-icone",
+              className: "pr-carte-icone",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("svg", {
                 width: "48",
                 height: "48",
