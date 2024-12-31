@@ -14,73 +14,81 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
-/**
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
- */
-
-
-/**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#inspectorcontrols
- */
-
-
-/**
- * Imports the necessary components that will be used to create
- * the user interface for the block's settings.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/components/panel/#panelbody
- * @see https://developer.wordpress.org/block-editor/reference-guides/components/text-control/
- * @see https://developer.wordpress.org/block-editor/reference-guides/components/toggle-control/
- */
-
-
-/**
- * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
- * Those files can contain any CSS code that gets applied to the editor.
- *
- * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
- */
-
-
-/**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
- *
- * @return {Element} Element to render.
- */
-
-
- // Ajoutez cet import
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
 
 
 
+
+
+
+
+
+// AccordionItem.js
+
+function AccordionItem({
+  tiroir,
+  index,
+  isOpen,
+  onToggle,
+  clientId
+}) {
+  // Créer un identifiant unique basé sur l'ID du tiroir
+  const uniqueId = `${clientId}-${tiroir.id}`;
+  const innerBlocksProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useInnerBlocksProps)({
+    className: "pr-accordeon-content-inner"
+  }, {
+    templateLock: false,
+    renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.ButtonBlockAppender,
+    // Définir une clé unique pour le template
+    clientId: uniqueId
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+    className: "pr-accordeon-container",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("h3", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+        type: "button",
+        "aria-expanded": isOpen,
+        className: "pr-accordeon-trigger js-trigger",
+        "aria-controls": `content-id-${tiroir.id}`,
+        id: `accordeon-${tiroir.id}-id`,
+        onClick: onToggle,
+        children: tiroir.titleField || `Tiroir ${index + 1}`
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+      id: `content-id-${tiroir.id}`,
+      role: "region",
+      "aria-labelledby": `accordeon-${tiroir.id}-id`,
+      className: "pr-accordeon-content js-content",
+      hidden: !isOpen,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+        ...innerBlocksProps
+      })
+    })]
+  });
+}
+
+// Edit.js
 function Edit({
   attributes,
   setAttributes,
   clientId
 }) {
-  const [openAccordions, setOpenAccordions] = (0,react__WEBPACK_IMPORTED_MODULE_4__.useState)({});
+  const [openAccordions, setOpenAccordions] = (0,react__WEBPACK_IMPORTED_MODULE_5__.useState)({});
   const {
     tiroirs
   } = attributes;
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)();
   const toggleAccordeon = accordionId => {
     setOpenAccordions(prev => ({
       ...prev,
@@ -88,11 +96,13 @@ function Edit({
     }));
   };
   function addTiroir() {
+    const newTiroir = {
+      id: (0,uuid__WEBPACK_IMPORTED_MODULE_7__["default"])(),
+      titleField: "",
+      innerBlocksTemplate: [] // Ajout d'un template vide pour les InnerBlocks
+    };
     setAttributes({
-      tiroirs: [...tiroirs, {
-        id: (0,uuid__WEBPACK_IMPORTED_MODULE_6__["default"])(),
-        titleField: ""
-      }]
+      tiroirs: [...tiroirs, newTiroir]
     });
   }
   function removeTiroir(index) {
@@ -109,33 +119,20 @@ function Edit({
       tiroirs: newTiroirs
     });
   }
-
-  // Obtenir un ID unique pour chaque InnerBlocks
-  function getTiroirClientId(tiroir) {
-    return `${clientId}-tiroir-${tiroir.id}`;
-  }
-
-  // Définir les blocs autorisés - laissez vide pour autoriser tous les blocs
-  const ALLOWED_BLOCKS = null; // ou spécifiez ['core/paragraph', 'core/columns', etc.]
-
-  // Template par défaut (optionnel)
-  const TEMPLATE = [["core/paragraph", {
-    placeholder: "Ajoutez votre contenu ici..."
-  }]];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Settings", "block-development-examples"),
-        children: [tiroirs.map((tiroir, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        children: [tiroirs.map((tiroir, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
           style: {
             marginBottom: "20px"
           },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
             label: `Titre`,
             help: "Phrase d'un maximum de 25 caract\xE8res",
             value: tiroir.titleField,
             onChange: value => updateTiroir(index, "titleField", value)
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
             style: {
               background: "red",
               color: "white",
@@ -146,7 +143,7 @@ function Edit({
             onClick: () => removeTiroir(index),
             children: "Supprimer"
           })]
-        }, index)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
+        }, index)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
           style: {
             background: "green",
             color: "white",
@@ -159,31 +156,15 @@ function Edit({
           children: "Ajouter un tiroir"
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+      ...blockProps,
       className: "pr-accordeon",
-      children: tiroirs.map((tiroir, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-        className: "pr-accordeon-container",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h3", {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
-            type: "button",
-            "aria-expanded": openAccordions[`content-id-${tiroir.id}`] || false,
-            className: "pr-accordeon-trigger js-trigger",
-            "aria-controls": `content-id-${tiroir.id}`,
-            id: `accordeon-${tiroir.id}-id`,
-            onClick: () => toggleAccordeon(`content-id-${tiroir.id}`),
-            children: tiroir.titleField || `Tiroir ${index}`
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-          id: `content-id-${tiroir.id}`,
-          role: "region",
-          "aria-labelledby": `accordeon-${tiroir.id}-id`,
-          className: "pr-accordeon-content js-content",
-          hidden: !openAccordions[`content-id-${tiroir.id}`],
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks, {
-            allowedBlocks: ALLOWED_BLOCKS,
-            template: TEMPLATE
-          })
-        })]
+      children: tiroirs.map((tiroir, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(AccordionItem, {
+        tiroir: tiroir,
+        index: index,
+        isOpen: openAccordions[`content-id-${tiroir.id}`] || false,
+        onToggle: () => toggleAccordeon(`content-id-${tiroir.id}`),
+        clientId: clientId
       }, tiroir.id))
     })]
   });
@@ -551,7 +532,7 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/pr-accordeon","version":"0.1.0","title":"Pr Accordeon","category":"layout","icon":"list-view","description":"Accordéon bloc ouvrable / fermable contenant du texte","example":{},"supports":{"html":false,"innerBlocks":true},"textdomain":"pr-accordeon","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js","attributes":{"titleField":{"type":"string","default":""},"tiroirs":{"type":"array","default":[{}]}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/pr-accordeon","version":"0.1.0","title":"Pr Accordeon","category":"widgets","icon":"list-view","description":"Accordéon bloc ouvrable / fermable contenant du texte","example":{},"supports":{"html":false,"innerBlocks":true,"multiple":true},"textdomain":"pr-accordeon","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","attributes":{"titleField":{"type":"string","default":""},"tiroirs":{"type":"array","default":[{}]}},"allowedBlocks":["core/categories","core/column","core/columns","core/comments-title","core/file","core/form","core/form-input","core/gallery","core/group","core/heading","core/html","core/image","core/list","core/list-item","core/navigation-link","core/paragraph","core/table"]}');
 
 /***/ })
 
