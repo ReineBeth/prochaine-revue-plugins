@@ -52,18 +52,18 @@ add_action( 'init', 'create_block_pr_carte_block_init' );
 /**
  * Enregistre le JavaScript pour l'animation de la carte
  */
-function enqueue_pr_carte_script() {
-    if (has_block('create-block/pr-carte')) {
-        wp_enqueue_script(
-            'pr-carte-flip',
-            plugins_url('assets/js/flip.js', __FILE__),
-            array(),
-            filemtime(plugin_dir_path(__FILE__) . 'assets/js/flip.js'),
-            true
-        );
-    }
+function enqueue_pr_carte_assets() {
+    wp_enqueue_script(
+        'pr-carte-flip',
+        plugins_url('assets/js/flip.js', __FILE__),
+        array(),
+        filemtime(plugin_dir_path(__FILE__) . 'assets/js/flip.js'),
+        true
+    );
 }
-add_action('wp_enqueue_scripts', 'enqueue_pr_carte_script');
+add_action('wp_enqueue_scripts', 'enqueue_pr_carte_assets');
+
+
 
 /**
  * Rendu du bloc
