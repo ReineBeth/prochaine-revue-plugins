@@ -143,6 +143,8 @@ function Edit({
       role: "button",
       className: "pr-carte",
       style: cardStyle,
+      "aria-label": card.isFlipped ? `${card.textField}` : `Apprendre plus sur ${card.titleField}, ${card.subtitleField}`,
+      "aria-live": "assertive",
       onClick: () => toggleCardFlip(index),
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
         className: "pr-carte-contenu",
@@ -243,7 +245,7 @@ function Edit({
             value: card.titleField,
             onChange: value => updateCard(index, 'titleField', value)
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-            label: `Sousd titre ${index + 1}`,
+            label: `Sous titre ${index + 1}`,
             help: "Phrase d'un maximum de 25 caract\xE8res",
             maxLength: 25,
             value: card.subtitleField,
@@ -419,10 +421,7 @@ function save({
   attributes
 }) {
   const {
-    titleField,
-    subtitleField,
-    textField,
-    imageUrl
+    cards = []
   } = attributes;
   const flipIcon = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("svg", {
     width: "48",
@@ -442,29 +441,29 @@ function save({
     ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps.save(),
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "pr-carte-container",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      children: cards.map((card, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
         role: "button",
-        className: "pr-carte",
-        "aria-label": `Apprendre plus sur ${titleField}, ${subtitleField}`,
+        "aria-label": `Apprendre plus sur ${card.titleField}, ${card.subtitleField}`,
         "aria-live": "assertive",
+        className: "pr-carte",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
           className: "pr-carte-contenu",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
             className: "pr-carte-front",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+              children: [card.showImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
                 className: "pr-carte-bloc-image",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
                   className: "pr-carte-image",
-                  src: imageUrl || "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg",
-                  alt: titleField
+                  src: card.imageUrl || "https://placecats.com/520/300",
+                  alt: card.titleField || `Image ${index + 1}`
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h3", {
                 className: "pr-carte-titre",
-                children: titleField
+                children: card.titleField || ''
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h4", {
                 className: "pr-carte-soustitre",
-                children: subtitleField
+                children: card.subtitleField
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
               className: "pr-carte-icone",
@@ -473,14 +472,14 @@ function save({
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
             className: "pr-carte-back",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
-              children: textField
+              children: card.textField
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
               className: "pr-carte-icone",
               children: flipIcon
             })]
           })]
         })
-      })
+      }, index))
     })
   });
 }

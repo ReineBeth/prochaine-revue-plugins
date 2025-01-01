@@ -117,6 +117,8 @@ export default function Edit( { attributes, setAttributes}) {
 					role="button"
 					className="pr-carte"
 					style={cardStyle}
+					aria-label={card.isFlipped ? `${card.textField}` : `Apprendre plus sur ${card.titleField}, ${card.subtitleField}`}
+					aria-live='assertive'
 					onClick={() => toggleCardFlip(index)}
 				>
 					<div className="pr-carte-contenu" style={cardStyle}>
@@ -196,7 +198,7 @@ export default function Edit( { attributes, setAttributes}) {
                             onChange={(value) => updateCard(index, 'titleField', value)}
                         />
                         <TextControl
-                            label={`Sousd titre ${index + 1}`}
+                            label={`Sous titre ${index + 1}`}
                             help="Phrase d'un maximum de 25 caractères"
                             maxLength={25}
                             value={card.subtitleField}
