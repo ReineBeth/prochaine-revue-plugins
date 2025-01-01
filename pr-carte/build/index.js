@@ -62,6 +62,10 @@ __webpack_require__.r(__webpack_exports__);
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  *
+ * *
+ * @param {Object}   props               Properties passed to the function.
+ * @param {Object}   props.attributes    Available block attributes.
+ * @param {Function} props.setAttributes Function that updates individual attributes.
  * @return {Element} Element to render.
  */
 
@@ -74,11 +78,8 @@ function Edit({
   setAttributes
 }) {
   const {
-    titleField,
-    subtitleField,
-    textField,
-    imageUrl
-  } = attributes;
+    cards = []
+  } = attributes; //Nécessaire même si card à une valeur de array vide par défaut dans block.json, bug
   const [isFlipped, setIsFlipped] = (0,react__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
   function toggleFlip() {
     setIsFlipped(!isFlipped);
@@ -114,76 +115,128 @@ function Edit({
     })
   });
 
-  // Mettre à jour une carte
-  function updateCard(value) {
+  //Ajouter une carte
+  function addCard() {
+    const existingCards = cards || [];
     setAttributes({
-      imageUrl: value
+      cards: [...existingCards, {
+        titleField: "",
+        subtitleField: "",
+        textField: "",
+        imageUrl: ""
+      }]
+    });
+  }
+
+  // Mettre à jour une carte
+  function updateCard(index, field, value) {
+    const newCards = [...cards];
+    newCards[index][field] = value;
+    setAttributes({
+      cards: newCards
+    });
+  }
+
+  // Supprimer une carte
+  function removeCard(index) {
+    const newCards = [...cards];
+    newCards.splice(index, 1);
+    setAttributes({
+      cards: newCards
     });
   }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
         title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Settings", "block-development-examples"),
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        children: [cards.map((card, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          style: {
+            marginBottom: "20px"
+          },
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-            label: 'Titre',
+            label: `Titre ${index + 1}`,
             help: "Phrase d'un maximum de 25 caract\xE8res",
             maxLength: 25,
-            value: titleField,
-            onChange: value => setAttributes({
-              titleField: value
-            })
+            value: card.titleField,
+            onChange: value => updateCard(index, 'titleField', value)
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-            label: 'Sous titre',
+            label: `Sousd titre ${index + 1}`,
             help: "Phrase d'un maximum de 25 caract\xE8res",
             maxLength: 25,
-            value: subtitleField,
-            onChange: value => setAttributes({
-              subtitleField: value
-            })
+            value: card.subtitleField,
+            onChange: value => updateCard(index, 'subtitleField', value)
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-            label: 'Texte',
-            value: textField,
-            onChange: value => setAttributes({
-              textField: value
-            }),
+            label: `Texte ${index + 1}`,
+            value: card.textField,
+            onChange: value => updateCard(index, 'textField', value),
             help: "Texte d'un maximum de 450 caract\xE8res",
             maxLength: 450
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
-            onSelect: media => {
-              updateCard(media.url);
-            },
-            allowedTypes: ["image"],
-            value: imageUrl,
-            render: ({
-              open
-            }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-              onClick: open,
-              variant: "secondary",
-              style: {
-                display: "block",
-                marginBottom: "10px"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Afficher l'image", "block-development-examples"),
+            checked: card.showImage,
+            onChange: value => updateCard(index, "showImage", value)
+          }), card.showImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.MediaUpload, {
+              onSelect: media => {
+                updateCard(index, "imageUrl", media.url);
+                updateCard(index, "imageAlt", media.alt);
               },
-              children: imageUrl ? "Changer l'image" : "Choisir une image"
-            })
-          }), imageUrl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
-            src: imageUrl,
+              allowedTypes: ["image"],
+              value: card.imageUrl,
+              render: ({
+                open
+              }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+                onClick: open,
+                variant: "secondary",
+                style: {
+                  display: "block",
+                  marginBottom: "10px"
+                },
+                children: card.imageUrl ? "Changer l'image" : "Choisir une image"
+              })
+            }), card.imageUrl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
+              src: card.imageUrl,
+              alt: card.imageAlt || `Image ${index + 1}`,
+              style: {
+                maxWidth: "100%",
+                height: "auto"
+              }
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
             style: {
-              maxWidth: "100%",
-              height: "auto"
-            }
+              background: "red",
+              color: "white",
+              border: "none",
+              padding: "5px 10px",
+              cursor: "pointer"
+            },
+            onClick: () => removeCard(index),
+            children: "Supprimer"
           })]
-        })
+        }, index)), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
+          style: {
+            background: "green",
+            color: "white",
+            border: "none",
+            padding: "10px 15px",
+            cursor: "pointer",
+            marginTop: "20px"
+          },
+          onClick: addCard,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
+            children: "Ajouter une carte"
+          })
+        })]
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
       className: "pr-carte-container",
       ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)(),
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+      children: cards.map((card, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         role: "button",
         className: "pr-carte",
         style: styleAnimationCarte,
         onClick: toggleFlip,
-        "aria-label": isFlipped ? textField : `Apprendre plus sur ${titleField}, ${subtitleField}`,
+        "aria-label": isFlipped ? card.textField : `Apprendre plus sur ${card.titleField}, ${card.subtitleField}`,
         "aria-live": "assertive",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
           className: "pr-carte-contenu",
@@ -192,19 +245,19 @@ function Edit({
             className: "pr-carte-front",
             style: styleFront,
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+              children: [card.showImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
                 className: "pr-carte-bloc-image",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
                   className: "pr-carte-image",
-                  src: imageUrl || "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg",
-                  alt: titleField
+                  src: card.imageUrl || "https://placecats.com/520/300",
+                  alt: card.titleField || `Image ${index + 1}`
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h3", {
                 className: "pr-carte-titre",
-                children: titleField
+                children: card.titleField
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
                 className: "pr-carte-soustitre",
-                children: subtitleField
+                children: card.subtitleField
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
               className: "pr-carte-icone",
@@ -214,14 +267,14 @@ function Edit({
             className: "pr-carte-back",
             style: styleBack,
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
-              children: textField
+              children: card.textField
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
               className: "pr-carte-icone",
               children: flipIcon
             })]
           })]
         })
-      })
+      }))
     })]
   });
 }
@@ -484,7 +537,7 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/pr-carte","version":"0.1.0","title":"Carte","category":"widgets","icon":"smiley","description":"Carte représentant un membre de l\'équipe.","example":{},"attributes":{"titleField":{"type":"string","default":""},"subtitleField":{"type":"string","default":""},"textField":{"type":"string","default":""},"imageUrl":{"type":"string","default":""},"cards":{"type":"array","default":[]}},"supports":{"html":false},"textdomain":"pr-carte","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/pr-carte","version":"0.1.0","title":"Carte","category":"widgets","icon":"smiley","description":"Carte représentant un membre de l\'équipe.","example":{},"attributes":{"titleField":{"type":"string","default":""},"subtitleField":{"type":"string","default":""},"textField":{"type":"string","default":""},"imageUrl":{"type":"string","default":""},"isFlipped":{"type":"boolean","default":false},"cards":{"type":"array","default":[]}},"supports":{"html":false},"textdomain":"pr-carte","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","viewScript":"file:./view.js"}');
 
 /***/ })
 

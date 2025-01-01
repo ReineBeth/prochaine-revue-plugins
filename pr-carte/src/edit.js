@@ -37,6 +37,10 @@ import './editor.scss';
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  *
+ * *
+ * @param {Object}   props               Properties passed to the function.
+ * @param {Object}   props.attributes    Available block attributes.
+ * @param {Function} props.setAttributes Function that updates individual attributes.
  * @return {Element} Element to render.
  */
 
@@ -45,13 +49,12 @@ import { Button } from "@wordpress/components";
 import { useState } from "react";
 
 export default function Edit( { attributes, setAttributes}) {
-	const { titleField, subtitleField, textField, imageUrl } = attributes
+	const { cards = [] } = attributes; //Nécessaire même si card à une valeur de array vide par défaut dans block.json, bug
 	const [isFlipped, setIsFlipped] = useState(false);
 
 	function toggleFlip(){
 		setIsFlipped(!isFlipped);
 	}
-
 
     const styleAnimationCarte = {
         transform: isFlipped ? 'rotateY(-180deg)' : 'rotateY(0deg)',
@@ -78,99 +81,165 @@ export default function Edit( { attributes, setAttributes}) {
         </svg>
     );
 
+	//Ajouter une carte
+	function addCard() {
+		const existingCards = cards || [];
+
+		setAttributes({
+			cards: [
+				...existingCards,
+				{ titleField: "", subtitleField: "", textField: "", imageUrl: "" },
+			],
+		});
+	}
+
 	// Mettre à jour une carte
-	function updateCard(value) {
-		setAttributes({ imageUrl: value });
+	function updateCard(index, field, value) {
+		const newCards = [...cards];
+		newCards[index][field] = value;
+		setAttributes({ cards: newCards });
+	}
+
+	// Supprimer une carte
+	function removeCard(index) {
+		const newCards = [...cards];
+		newCards.splice(index, 1);
+		setAttributes({ cards: newCards });
 	}
 
 	return (
         <>
             <InspectorControls>
                 <PanelBody title={__("Settings", "block-development-examples")}>
-                    <div>
+				{(cards).map((card, index) => (
+					<div key={index} style={{ marginBottom: "20px" }}>
                         <TextControl
-                            label={'Titre'}
+                            label={`Titre ${index + 1}`}
                             help="Phrase d'un maximum de 25 caractères"
                             maxLength={25}
-                            value={titleField}
-                            onChange={(value) => setAttributes({ titleField: value })}
+                            value={card.titleField}
+                            onChange={(value) => updateCard(index, 'titleField', value)}
                         />
                         <TextControl
-                            label={'Sous titre'}
+                            label={`Sousd titre ${index + 1}`}
                             help="Phrase d'un maximum de 25 caractères"
                             maxLength={25}
-                            value={subtitleField}
-                            onChange={(value) => setAttributes({ subtitleField: value })}
+                            value={card.subtitleField}
+                            onChange={(value) => updateCard(index, 'subtitleField', value)}
                         />
                         <TextControl
-                            label={'Texte'}
-                            value={textField}
-                            onChange={(value) => setAttributes({ textField: value })}
+                            label={`Texte ${index + 1}`}
+                            value={card.textField}
+                            onChange={(value) => updateCard(index, 'textField', value)}
                             help="Texte d'un maximum de 450 caractères"
                             maxLength={450}
                         />
-                        <MediaUpload
-                            onSelect={(media) => {
-                                updateCard(media.url);
-                            }}
-                            allowedTypes={["image"]}
-                            value={imageUrl}
-                            render={({ open }) => (
-                                <Button
-                                    onClick={open}
-                                    variant="secondary"
-                                    style={{
-                                        display: "block",
-                                        marginBottom: "10px",
-                                    }}
-                                >
-                                    {imageUrl ? "Changer l'image" : "Choisir une image"}
-                                </Button>
-                            )}
-                        />
-                        {imageUrl && (
-                            <img
-                                src={imageUrl}
-                                style={{ maxWidth: "100%", height: "auto" }}
-                            />
-                        )}
-                    </div>
+						<ToggleControl
+								label={__("Afficher l'image", "block-development-examples")}
+								checked={card.showImage}
+								onChange={(value) => updateCard(index, "showImage", value)}
+							/>
+
+							{card.showImage && (
+								<>
+									<MediaUpload
+										onSelect={(media) => {
+											updateCard(index, "imageUrl", media.url);
+											updateCard(index, "imageAlt", media.alt);
+										}}
+										allowedTypes={["image"]}
+										value={card.imageUrl}
+										render={({ open }) => (
+											<Button
+												onClick={open}
+												variant="secondary"
+												style={{
+													display: "block",
+													marginBottom: "10px",
+												}}
+											>
+												{card.imageUrl
+													? "Changer l'image"
+													: "Choisir une image"}
+											</Button>
+										)}
+									/>
+									{card.imageUrl && (
+										<img
+											src={card.imageUrl}
+											alt={card.imageAlt || `Image ${index + 1}`}
+											style={{ maxWidth: "100%", height: "auto" }}
+										/>
+									)}
+								</>
+							)}
+							<button
+								style={{
+									background: "red",
+									color: "white",
+									border: "none",
+									padding: "5px 10px",
+									cursor: "pointer",
+								}}
+								onClick={() => removeCard(index)}
+							>
+								Supprimer
+							</button>
+						</div>
+					))}
+					<button
+						style={{
+							background: "green",
+							color: "white",
+							border: "none",
+							padding: "10px 15px",
+							cursor: "pointer",
+							marginTop: "20px",
+						}}
+						onClick={addCard}
+					>
+						<span>Ajouter une carte</span>
+					</button>
                 </PanelBody>
             </InspectorControls>
             <div className="pr-carte-container" {...useBlockProps()}>
+			{(cards).map((card, index) => (
                 <div
                     role="button"
                     className="pr-carte"
                     style={styleAnimationCarte}
                     onClick={toggleFlip}
-                    aria-label={isFlipped ? textField : `Apprendre plus sur ${titleField}, ${subtitleField}`}
+                    aria-label={isFlipped ? card.textField : `Apprendre plus sur ${card.titleField}, ${card.subtitleField}`}
                     aria-live="assertive"
                 >
 				<div className="pr-carte-contenu" style={styleAnimationCarte}>
                     <div className="pr-carte-front" style={styleFront}>
                         <div>
-                            <div className="pr-carte-bloc-image">
-                                <img
-                                    className="pr-carte-image"
-                                    src={imageUrl || "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2281862025.jpg"}
-                                    alt={titleField}
-                                />
-                            </div>
-                            <h3 className="pr-carte-titre">{titleField}</h3>
-                            <h4 className="pr-carte-soustitre">{subtitleField}</h4>
+                            {card.showImage && (
+								<div className="pr-carte-bloc-image">
+									<img
+											className="pr-carte-image"
+											src={card.imageUrl || "https://placecats.com/520/300"}
+											alt={card.titleField || `Image ${index + 1}`}
+									/>
+                        			</div>
+								)}
+                            <h3 className="pr-carte-titre">{card.titleField}</h3>
+                            <h4 className="pr-carte-soustitre">{card.subtitleField}</h4>
                         </div>
                         <div className="pr-carte-icone">
                             {flipIcon}
                         </div>
                     </div>
                     <div className="pr-carte-back" style={styleBack}>
-                        <p>{textField}</p>
+                        <p>{card.textField}</p>
                         <div className="pr-carte-icone">
                             {flipIcon}
                         </div>
                     </div>
                 </div>
-				</div>
+			</div>
+			))}
             </div>
         </>
     );

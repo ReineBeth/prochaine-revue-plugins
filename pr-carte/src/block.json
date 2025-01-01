@@ -25,6 +25,10 @@
 			"type": "string",
 			"default": ""
 		},
+		"isFlipped": {
+			"type": "boolean",
+			"default": false
+		},
 		"cards": {
 			"type": "array",
 			"default": []
