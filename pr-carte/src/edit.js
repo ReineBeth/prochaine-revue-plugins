@@ -46,34 +46,109 @@ import './editor.scss';
 
 import { MediaUpload } from "@wordpress/block-editor";
 import { Button } from "@wordpress/components";
-import { useState } from "react";
+import { useMemo } from "react";
 
 export default function Edit( { attributes, setAttributes}) {
-	const { cards = [] } = attributes; //Nécessaire même si card à une valeur de array vide par défaut dans block.json, bug
-	const [isFlipped, setIsFlipped] = useState(false);
+	const { cards = [] } = attributes; //Nécessaire même si card à une valeur de array vide par défaut dans block.json, bug ?
 
-	function toggleFlip(){
-		setIsFlipped(!isFlipped);
-	}
+	// Défini les styles une seule fois avec useMemo au lieu de les recaculer à chaque rendu
+    const styles = useMemo(() => ({
+        carte: {
+            base: {
+                transition: 'transform 1s, background-color 0.75s',
+            },
+            flipped: {
+                transform: 'rotateY(-180deg)',
+                backgroundColor: '#3A5A40',
+                borderColor: '#92d16e'
+            },
+            notFlipped: {
+                transform: 'rotateY(0deg)',
+                backgroundColor: '#ffffff',
+                borderColor: '#478245'
+            }
+        },
+        face: {
+            base: {
+                transition: 'opacity 0.3s ease, visibility 0.3s ease'
+            },
+            visible: {
+                opacity: '1',
+                visibility: 'visible'
+            },
+            hidden: {
+                opacity: '0',
+                visibility: 'hidden'
+            }
+        }
+    }), []); // Tableau vide car les styles sont constants
 
-    const styleAnimationCarte = {
-        transform: isFlipped ? 'rotateY(-180deg)' : 'rotateY(0deg)',
-        transition: 'transform 1s, background-color 0.75s',
-        backgroundColor: isFlipped ? '#3A5A40' : '#ffffff',
-        borderColor: isFlipped ? '#92d16e' : '#478245'
-    };
+    function toggleCardFlip(index) {
+        // Créer une nouvelle copie seulement de la carte modifiée
+        const newCards = [...cards];
+        newCards[index] = {
+            ...newCards[index],
+            isFlipped: !newCards[index].isFlipped
+        };
+        setAttributes({ cards: newCards });
+    }
 
-    const styleFront = {
-        opacity: isFlipped ? '0' : '1',
-        visibility: isFlipped ? 'hidden' : 'visible',
-        transition: 'opacity 0.3s ease, visibility 0.3s ease'
-    };
+	    // Rendu des cartes séparé
+		const renderCard = (card, index) => {
 
-    const styleBack = {
-        opacity: isFlipped ? '1' : '0',
-        visibility: isFlipped ? 'visible' : 'hidden',
-        transition: 'opacity 0.3s ease, visibility 0.3s ease'
-    };
+			const cardStyle = {
+				...styles.carte.base,
+				...(card.isFlipped ? styles.carte.flipped : styles.carte.notFlipped)
+			};
+
+			const frontStyle = {
+				...styles.face.base,
+				...(card.isFlipped ? styles.face.hidden : styles.face.visible)
+			};
+
+			const backStyle = {
+				...styles.face.base,
+				...(card.isFlipped ? styles.face.visible : styles.face.hidden)
+			};
+
+			return (
+				<div
+					key={index}
+					role="button"
+					className="pr-carte"
+					style={cardStyle}
+					onClick={() => toggleCardFlip(index)}
+				>
+					<div className="pr-carte-contenu" style={cardStyle}>
+						<div className="pr-carte-front" style={frontStyle}>
+						<div>
+								{card.showImage && (
+									<div className="pr-carte-bloc-image">
+										<img
+												className="pr-carte-image"
+												src={card.imageUrl || "https://placecats.com/520/300"}
+												alt={card.titleField || `Image ${index + 1}`}
+										/>
+										</div>
+									)}
+								<h3 className="pr-carte-titre">{card.titleField}</h3>
+								<h4 className="pr-carte-soustitre">{card.subtitleField}</h4>
+							</div>
+							<div className="pr-carte-icone">
+								{flipIcon}
+							</div>
+						</div>
+						<div className="pr-carte-back" style={backStyle}>
+							<p>{card.textField}</p>
+							<div className="pr-carte-icone">
+								{flipIcon}
+							</div>
+						</div>
+					</div>
+				</div>
+			);
+		};
+
 
 	const flipIcon = (
         <svg width="48" height="48" clipRule="evenodd" fillRule="evenodd" strokeLinejoin="round" strokeMiterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -88,7 +163,7 @@ export default function Edit( { attributes, setAttributes}) {
 		setAttributes({
 			cards: [
 				...existingCards,
-				{ titleField: "", subtitleField: "", textField: "", imageUrl: "" },
+				{ titleField: "", subtitleField: "", textField: "", imageUrl: "", isFlipped: false },
 			],
 		});
 	}
@@ -203,43 +278,7 @@ export default function Edit( { attributes, setAttributes}) {
                 </PanelBody>
             </InspectorControls>
             <div className="pr-carte-container" {...useBlockProps()}>
-			{(cards).map((card, index) => (
-                <div
-                    role="button"
-                    className="pr-carte"
-                    style={styleAnimationCarte}
-                    onClick={toggleFlip}
-                    aria-label={isFlipped ? card.textField : `Apprendre plus sur ${card.titleField}, ${card.subtitleField}`}
-                    aria-live="assertive"
-                >
-				<div className="pr-carte-contenu" style={styleAnimationCarte}>
-                    <div className="pr-carte-front" style={styleFront}>
-                        <div>
-                            {card.showImage && (
-								<div className="pr-carte-bloc-image">
-									<img
-											className="pr-carte-image"
-											src={card.imageUrl || "https://placecats.com/520/300"}
-											alt={card.titleField || `Image ${index + 1}`}
-									/>
-                        			</div>
-								)}
-                            <h3 className="pr-carte-titre">{card.titleField}</h3>
-                            <h4 className="pr-carte-soustitre">{card.subtitleField}</h4>
-                        </div>
-                        <div className="pr-carte-icone">
-                            {flipIcon}
-                        </div>
-                    </div>
-                    <div className="pr-carte-back" style={styleBack}>
-                        <p>{card.textField}</p>
-                        <div className="pr-carte-icone">
-                            {flipIcon}
-                        </div>
-                    </div>
-                </div>
-			</div>
-			))}
+                {cards.map(renderCard)}
             </div>
         </>
     );

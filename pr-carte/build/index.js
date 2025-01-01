@@ -79,26 +79,108 @@ function Edit({
 }) {
   const {
     cards = []
-  } = attributes; //Nécessaire même si card à une valeur de array vide par défaut dans block.json, bug
-  const [isFlipped, setIsFlipped] = (0,react__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
-  function toggleFlip() {
-    setIsFlipped(!isFlipped);
+  } = attributes; //Nécessaire même si card à une valeur de array vide par défaut dans block.json, bug ?
+
+  // Défini les styles une seule fois avec useMemo au lieu de les recaculer à chaque rendu
+  const styles = (0,react__WEBPACK_IMPORTED_MODULE_4__.useMemo)(() => ({
+    carte: {
+      base: {
+        transition: 'transform 1s, background-color 0.75s'
+      },
+      flipped: {
+        transform: 'rotateY(-180deg)',
+        backgroundColor: '#3A5A40',
+        borderColor: '#92d16e'
+      },
+      notFlipped: {
+        transform: 'rotateY(0deg)',
+        backgroundColor: '#ffffff',
+        borderColor: '#478245'
+      }
+    },
+    face: {
+      base: {
+        transition: 'opacity 0.3s ease, visibility 0.3s ease'
+      },
+      visible: {
+        opacity: '1',
+        visibility: 'visible'
+      },
+      hidden: {
+        opacity: '0',
+        visibility: 'hidden'
+      }
+    }
+  }), []); // Tableau vide car les styles sont constants
+
+  function toggleCardFlip(index) {
+    // Créer une nouvelle copie seulement de la carte modifiée
+    const newCards = [...cards];
+    newCards[index] = {
+      ...newCards[index],
+      isFlipped: !newCards[index].isFlipped
+    };
+    setAttributes({
+      cards: newCards
+    });
   }
-  const styleAnimationCarte = {
-    transform: isFlipped ? 'rotateY(-180deg)' : 'rotateY(0deg)',
-    transition: 'transform 1s, background-color 0.75s',
-    backgroundColor: isFlipped ? '#3A5A40' : '#ffffff',
-    borderColor: isFlipped ? '#92d16e' : '#478245'
-  };
-  const styleFront = {
-    opacity: isFlipped ? '0' : '1',
-    visibility: isFlipped ? 'hidden' : 'visible',
-    transition: 'opacity 0.3s ease, visibility 0.3s ease'
-  };
-  const styleBack = {
-    opacity: isFlipped ? '1' : '0',
-    visibility: isFlipped ? 'visible' : 'hidden',
-    transition: 'opacity 0.3s ease, visibility 0.3s ease'
+
+  // Rendu des cartes séparé
+  const renderCard = (card, index) => {
+    const cardStyle = {
+      ...styles.carte.base,
+      ...(card.isFlipped ? styles.carte.flipped : styles.carte.notFlipped)
+    };
+    const frontStyle = {
+      ...styles.face.base,
+      ...(card.isFlipped ? styles.face.hidden : styles.face.visible)
+    };
+    const backStyle = {
+      ...styles.face.base,
+      ...(card.isFlipped ? styles.face.visible : styles.face.hidden)
+    };
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+      role: "button",
+      className: "pr-carte",
+      style: cardStyle,
+      onClick: () => toggleCardFlip(index),
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        className: "pr-carte-contenu",
+        style: cardStyle,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "pr-carte-front",
+          style: frontStyle,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+            children: [card.showImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+              className: "pr-carte-bloc-image",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
+                className: "pr-carte-image",
+                src: card.imageUrl || "https://placecats.com/520/300",
+                alt: card.titleField || `Image ${index + 1}`
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h3", {
+              className: "pr-carte-titre",
+              children: card.titleField
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
+              className: "pr-carte-soustitre",
+              children: card.subtitleField
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            className: "pr-carte-icone",
+            children: flipIcon
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "pr-carte-back",
+          style: backStyle,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+            children: card.textField
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            className: "pr-carte-icone",
+            children: flipIcon
+          })]
+        })]
+      })
+    }, index);
   };
   const flipIcon = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("svg", {
     width: "48",
@@ -123,7 +205,8 @@ function Edit({
         titleField: "",
         subtitleField: "",
         textField: "",
-        imageUrl: ""
+        imageUrl: "",
+        isFlipped: false
       }]
     });
   }
@@ -231,50 +314,7 @@ function Edit({
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
       className: "pr-carte-container",
       ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)(),
-      children: cards.map((card, index) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-        role: "button",
-        className: "pr-carte",
-        style: styleAnimationCarte,
-        onClick: toggleFlip,
-        "aria-label": isFlipped ? card.textField : `Apprendre plus sur ${card.titleField}, ${card.subtitleField}`,
-        "aria-live": "assertive",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-          className: "pr-carte-contenu",
-          style: styleAnimationCarte,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-            className: "pr-carte-front",
-            style: styleFront,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-              children: [card.showImage && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-                className: "pr-carte-bloc-image",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
-                  className: "pr-carte-image",
-                  src: card.imageUrl || "https://placecats.com/520/300",
-                  alt: card.titleField || `Image ${index + 1}`
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h3", {
-                className: "pr-carte-titre",
-                children: card.titleField
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h4", {
-                className: "pr-carte-soustitre",
-                children: card.subtitleField
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-              className: "pr-carte-icone",
-              children: flipIcon
-            })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-            className: "pr-carte-back",
-            style: styleBack,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
-              children: card.textField
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-              className: "pr-carte-icone",
-              children: flipIcon
-            })]
-          })]
-        })
-      }))
+      children: cards.map(renderCard)
     })]
   });
 }
