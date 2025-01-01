@@ -1,147 +1,98 @@
 import { __ } from "@wordpress/i18n";
-import { registerBlockType } from "@wordpress/blocks";
 import {
-	InnerBlocks,
-	InspectorControls,
 	useBlockProps,
 	useInnerBlocksProps,
+	InnerBlocks,
+	InspectorControls,
 } from "@wordpress/block-editor";
-import { PanelBody, TextControl } from "@wordpress/components";
+import { PanelBody, TextControl, SelectControl } from "@wordpress/components";
+import { useState } from "@wordpress/element";
 import "./editor.scss";
-import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 
-// AccordionItem.js
-function AccordionItem({ tiroir, index, isOpen, onToggle, clientId }) {
-	// Créer un identifiant unique basé sur l'ID du tiroir
-	const uniqueId = `${clientId}-${tiroir.id}`;
+export default function Edit({ attributes, setAttributes }) {
+	const [isOpen, setIsOpen] = useState(false);
+	const { titleField, headingLevel } = attributes;
+	const now = Date.now();
+
+	const blockProps = useBlockProps({
+		className: "pr-accordeon",
+	});
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{ className: "pr-accordeon-content-inner" },
 		{
 			templateLock: false,
 			renderAppender: InnerBlocks.ButtonBlockAppender,
-			// Définir une clé unique pour le template
-			clientId: uniqueId,
 		},
 	);
 
-	return (
-		<div className="pr-accordeon-container">
-			<h3>
-				<button
-					type="button"
-					aria-expanded={isOpen}
-					className="pr-accordeon-trigger js-trigger"
-					aria-controls={`content-id-${tiroir.id}`}
-					id={`accordeon-${tiroir.id}-id`}
-					onClick={onToggle}
-				>
-					{tiroir.titleField || `Tiroir ${index + 1}`}
-				</button>
-			</h3>
-			<div
-				id={`content-id-${tiroir.id}`}
-				role="region"
-				aria-labelledby={`accordeon-${tiroir.id}-id`}
-				className="pr-accordeon-content js-content"
-				hidden={!isOpen}
-			>
-				<div {...innerBlocksProps} />
-			</div>
-		</div>
-	);
-}
-
-// Edit.js
-export default function Edit({ attributes, setAttributes, clientId }) {
-	const [openAccordions, setOpenAccordions] = useState({});
-	const { tiroirs } = attributes;
-	const blockProps = useBlockProps();
-
-	const toggleAccordeon = (accordionId) => {
-		setOpenAccordions((prev) => ({
-			...prev,
-			[accordionId]: !prev[accordionId],
-		}));
+	const toggleAccordeon = () => {
+		setIsOpen((prevState) => !prevState);
 	};
 
-	function addTiroir() {
-		const newTiroir = {
-			id: uuidv4(),
-			titleField: "",
-			innerBlocksTemplate: [], // Ajout d'un template vide pour les InnerBlocks
-		};
-
-		setAttributes({
-			tiroirs: [...tiroirs, newTiroir],
-		});
-	}
-
-	function removeTiroir(index) {
-		const newTiroirs = [...tiroirs];
-		newTiroirs.splice(index, 1);
-		setAttributes({ tiroirs: newTiroirs });
-	}
-
-	function updateTiroir(index, field, value) {
-		const newTiroirs = [...tiroirs];
-		newTiroirs[index][field] = value;
-		setAttributes({ tiroirs: newTiroirs });
-	}
+	const accordionId = `uid-${now}`;
+	const HeadingTag = `h${headingLevel}`;
 
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={__("Settings", "block-development-examples")}>
-					{tiroirs.map((tiroir, index) => (
-						<div key={index} style={{ marginBottom: "20px" }}>
-							<TextControl
-								label={`Titre`}
-								help="Phrase d'un maximum de 25 caractères"
-								value={tiroir.titleField}
-								onChange={(value) => updateTiroir(index, "titleField", value)}
-							/>
-							<button
-								style={{
-									background: "red",
-									color: "white",
-									border: "none",
-									padding: "5px 10px",
-									cursor: "pointer",
-								}}
-								onClick={() => removeTiroir(index)}
-							>
-								Supprimer
-							</button>
-						</div>
-					))}
-					<button
-						style={{
-							background: "green",
-							color: "white",
-							border: "none",
-							padding: "10px 15px",
-							cursor: "pointer",
-							marginTop: "20px",
-						}}
-						onClick={addTiroir}
-					>
-						Ajouter un tiroir
-					</button>
+				<PanelBody
+					title={__("Paramètres de l'accordéon", "block-development-examples")}
+				>
+					<TextControl
+						label={__("Titre de l'accordéon", "block-development-examples")}
+						help={__("Maximum 25 caractères", "block-development-examples")}
+						value={titleField || ""}
+						onChange={(value) => setAttributes({ titleField: value })}
+						maxLength={25}
+					/>
+					<SelectControl
+						label={__("Niveau de titre", "block-development-examples")}
+						value={headingLevel}
+						options={[
+							{ label: "Titre 2", value: "2" },
+							{ label: "Titre 3", value: "3" },
+							{ label: "Titre 4", value: "4" },
+							{ label: "Titre 5", value: "5" },
+						]}
+						onChange={(value) => setAttributes({ headingLevel: value })}
+						help={__(
+							"Choisissez le niveau hiérarchique du titre",
+							"block-development-examples",
+						)}
+					/>
 				</PanelBody>
 			</InspectorControls>
-			<div {...blockProps} className="pr-accordeon">
-				{tiroirs.map((tiroir, index) => (
-					<AccordionItem
-						key={tiroir.id}
-						tiroir={tiroir}
-						index={index}
-						isOpen={openAccordions[`content-id-${tiroir.id}`] || false}
-						onToggle={() => toggleAccordeon(`content-id-${tiroir.id}`)}
-						clientId={clientId}
-					/>
-				))}
+
+			<div {...blockProps}>
+				<div className="pr-accordeon-container">
+					<HeadingTag>
+						<button
+							type="button"
+							aria-expanded={isOpen}
+							className={`pr-accordeon-trigger js-trigger ${
+								isOpen ? "is-open" : ""
+							}`}
+							aria-controls={`content-${accordionId}`}
+							id={`trigger-${accordionId}`}
+							onClick={toggleAccordeon}
+						>
+							{titleField ||
+								__("Titre de l'accordéon", "block-development-examples")}
+						</button>
+					</HeadingTag>
+					<div
+						id={`content-${accordionId}`}
+						role="region"
+						aria-labelledby={`trigger-${accordionId}`}
+						className={`pr-accordeon-content js-content ${
+							isOpen ? "is-open" : ""
+						}`}
+						hidden={!isOpen}
+					>
+						<div {...innerBlocksProps} />
+					</div>
+				</div>
 			</div>
 		</>
 	);

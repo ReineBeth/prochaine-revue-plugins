@@ -16,17 +16,16 @@
   "textdomain": "pr-accordeon",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
+  "viewScript": "file:./view.js",
   "style": "file:./style-index.css",
   "attributes": {
     "titleField": {
       "type": "string",
       "default": ""
     },
-    "tiroirs": {
-      "type": "array",
-      "default": [
-        {}
-      ]
+    "headingLevel": {
+      "type": "string",
+      "default": "3"
     }
   },
   "allowedBlocks": [

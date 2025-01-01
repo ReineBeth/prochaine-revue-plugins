@@ -18,10 +18,16 @@
   }
 }
 
-.pr-accordeon-container h3 {
+.pr-accordeon-container h2,
+.pr-accordeon-container h3,
+.pr-accordeon-container h4,
+.pr-accordeon-container h5 {
   margin: 0;
 }
-.pr-accordeon-container h3 button {
+.pr-accordeon-container h2 button,
+.pr-accordeon-container h3 button,
+.pr-accordeon-container h4 button,
+.pr-accordeon-container h5 button {
   font-size: inherit;
   font-family: inherit;
   font-weight: inherit;

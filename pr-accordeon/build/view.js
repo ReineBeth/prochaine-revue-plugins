@@ -24,9 +24,16 @@
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#view-script
  */
 
-/* eslint-disable no-console */
-console.log('Hello World! (from create-block-pr-accordeon block)');
-/* eslint-enable no-console */
+const triggerAccordeon = document.querySelectorAll(".js-trigger");
+console.log("trigger", triggerAccordeon);
+triggerAccordeon.forEach(element => {
+  element.addEventListener("click", function () {
+    const ariaControls = element.getAttribute("aria-controls");
+    const content = document.getElementById(ariaControls);
+    content.toggleAttribute("hidden");
+    element.classList.toggle("open");
+  });
+});
 /******/ })()
 ;
 //# sourceMappingURL=view.js.map
