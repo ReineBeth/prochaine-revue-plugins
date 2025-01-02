@@ -43,7 +43,7 @@
   font-weight: 400;
 }
 .pr-tuile-lien-text {
-  padding: 0 16px;
+  padding: 0 16px 16px 16px;
   min-height: 150px;
 }
 .pr-tuile-lien-image {

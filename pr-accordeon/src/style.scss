@@ -15,7 +15,10 @@
 	}
 }
 
-.pr-accordeon-container h3 {
+.pr-accordeon-container h2,
+.pr-accordeon-container h3,
+.pr-accordeon-container h4,
+.pr-accordeon-container h5 {
 	margin: 0;
 
 	button {
