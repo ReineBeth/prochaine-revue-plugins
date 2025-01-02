@@ -90,7 +90,7 @@ function render_block_pr_carte($attributes) {
     ob_start(); ?>
     <div class="wp-block-create-block-pr-carte">
         <div class="pr-carte-container">
-            <?php foreach ($cards as $card) :
+            <?php foreach ($cards as$card) :
                 $title = $card['titleField'] ?? '';
                 $subtitle = $card['subtitleField'] ?? '';
                 $text = $card['textField'] ?? '';
@@ -108,12 +108,12 @@ function render_block_pr_carte($attributes) {
                     <div class="pr-carte-contenu">
                         <div class="pr-carte-front">
                             <div>
-                                <?php if ($show_image && $image_url) : ?>
+                                <?php if ($show_image) : ?>
                                     <div class="pr-carte-bloc-image">
                                         <img
                                             class="pr-carte-image"
-                                            src="<?php echo esc_url($image_url); ?>"
-                                            alt="<?php echo esc_attr($image_alt); ?>"
+											src="<?php echo esc_url($image_url ?: 'https://placecats.com/520/300'); ?>"
+											alt="<?php echo esc_attr($image_alt ?: "Image"); ?>"
                                         />
                                     </div>
                                 <?php endif; ?>
