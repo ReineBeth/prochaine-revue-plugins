@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "create-block/pr-recherche-pdf",
+  "version": "0.1.0",
+  "title": "Pr Recherche Pdf",
+  "category": "widgets",
+  "icon": "smiley",
+  "description": "Ajouter un bloc de recherche de PDF",
+  "example": {},
+  "supports": {
+    "html": false
+  },
+  "textdomain": "pr-recherche-pdf",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js"
+}
