@@ -2,7 +2,7 @@ import { __ } from "@wordpress/i18n";
 import { useBlockProps, useInnerBlocksProps } from "@wordpress/block-editor";
 
 export default function Save({ attributes }) {
-	const { titleField, headingLevel } = attributes;
+	const { titleField, headingLevel, uniqueId } = attributes;
 
 	const blockProps = useBlockProps.save({
 		className: "pr-accordeon",
@@ -13,7 +13,6 @@ export default function Save({ attributes }) {
 	});
 
 	const HeadingTag = `h${headingLevel}`;
-	const accordionId = "pr-accordion-" + Date.now();
 
 	return (
 		<div {...blockProps}>
@@ -23,17 +22,17 @@ export default function Save({ attributes }) {
 						type="button"
 						aria-expanded="false"
 						className="pr-accordeon-trigger js-trigger"
-						aria-controls={`content-${accordionId}`}
-						id={`trigger-${accordionId}`}
+						aria-controls={`content-${uniqueId}`}
+						id={`trigger-${uniqueId}`}
 					>
 						{titleField ||
 							__("Titre de l'accordéon", "block-development-examples")}
 					</button>
 				</HeadingTag>
 				<div
-					id={`content-${accordionId}`}
+					id={`content-${uniqueId}`}
 					role="region"
-					aria-labelledby={`trigger-${accordionId}`}
+					aria-labelledby={`trigger-${uniqueId}`}
 					className="pr-accordeon-content js-content"
 					hidden
 				>

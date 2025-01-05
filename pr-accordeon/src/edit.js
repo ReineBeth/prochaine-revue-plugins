@@ -6,13 +6,12 @@ import {
 	InspectorControls,
 } from "@wordpress/block-editor";
 import { PanelBody, TextControl, SelectControl } from "@wordpress/components";
-import { useState } from "@wordpress/element";
+import { useState, useEffect } from "@wordpress/element";
 import "./editor.scss";
 
 export default function Edit({ attributes, setAttributes }) {
 	const [isOpen, setIsOpen] = useState(false);
-	const { titleField, headingLevel } = attributes;
-	const now = Date.now();
+	const { titleField, headingLevel, uniqueId } = attributes;
 
 	const blockProps = useBlockProps({
 		className: "pr-accordeon",
@@ -30,7 +29,13 @@ export default function Edit({ attributes, setAttributes }) {
 		setIsOpen((prevState) => !prevState);
 	};
 
-	const accordionId = `uid-${now}`;
+	useEffect(() => {
+		if (!uniqueId) {
+			const newId = `accordeon-${Date.now()}`;
+			setAttributes({ uniqueId: newId });
+		}
+	}, []);
+
 	const HeadingTag = `h${headingLevel}`;
 
 	return (
@@ -73,8 +78,8 @@ export default function Edit({ attributes, setAttributes }) {
 							className={`pr-accordeon-trigger js-trigger ${
 								isOpen ? "is-open" : ""
 							}`}
-							aria-controls={`content-${accordionId}`}
-							id={`trigger-${accordionId}`}
+							aria-controls={`content-${uniqueId}`}
+							id={`trigger-${uniqueId}`}
 							onClick={toggleAccordeon}
 						>
 							{titleField ||
@@ -82,9 +87,9 @@ export default function Edit({ attributes, setAttributes }) {
 						</button>
 					</HeadingTag>
 					<div
-						id={`content-${accordionId}`}
+						id={`content-${uniqueId}`}
 						role="region"
-						aria-labelledby={`trigger-${accordionId}`}
+						aria-labelledby={`trigger-${uniqueId}`}
 						className={`pr-accordeon-content js-content ${
 							isOpen ? "is-open" : ""
 						}`}

@@ -26,6 +26,10 @@
 		"headingLevel": {
 			"type": "string",
 			"default": "3"
+		},
+		"uniqueId": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"allowedBlocks": [

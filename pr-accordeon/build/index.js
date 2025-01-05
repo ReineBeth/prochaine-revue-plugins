@@ -36,9 +36,9 @@ function Edit({
   const [isOpen, setIsOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(false);
   const {
     titleField,
-    headingLevel
+    headingLevel,
+    uniqueId
   } = attributes;
-  const now = Date.now();
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: "pr-accordeon"
   });
@@ -51,7 +51,14 @@ function Edit({
   const toggleAccordeon = () => {
     setIsOpen(prevState => !prevState);
   };
-  const accordionId = `uid-${now}`;
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
+    if (!uniqueId) {
+      const newId = `accordeon-${Date.now()}`;
+      setAttributes({
+        uniqueId: newId
+      });
+    }
+  }, []);
   const HeadingTag = `h${headingLevel}`;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
@@ -96,15 +103,15 @@ function Edit({
             type: "button",
             "aria-expanded": isOpen,
             className: `pr-accordeon-trigger js-trigger ${isOpen ? "is-open" : ""}`,
-            "aria-controls": `content-${accordionId}`,
-            id: `trigger-${accordionId}`,
+            "aria-controls": `content-${uniqueId}`,
+            id: `trigger-${uniqueId}`,
             onClick: toggleAccordeon,
             children: titleField || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Titre de l'accordéon", "block-development-examples")
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-          id: `content-${accordionId}`,
+          id: `content-${uniqueId}`,
           role: "region",
-          "aria-labelledby": `trigger-${accordionId}`,
+          "aria-labelledby": `trigger-${uniqueId}`,
           className: `pr-accordeon-content js-content ${isOpen ? "is-open" : ""}`,
           hidden: !isOpen,
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
@@ -196,7 +203,8 @@ function Save({
 }) {
   const {
     titleField,
-    headingLevel
+    headingLevel,
+    uniqueId
   } = attributes;
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
     className: "pr-accordeon"
@@ -205,7 +213,6 @@ function Save({
     className: "pr-accordeon-content-inner"
   });
   const HeadingTag = `h${headingLevel}`;
-  const accordionId = "pr-accordion-" + Date.now();
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
     ...blockProps,
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
@@ -215,14 +222,14 @@ function Save({
           type: "button",
           "aria-expanded": "false",
           className: "pr-accordeon-trigger js-trigger",
-          "aria-controls": `content-${accordionId}`,
-          id: `trigger-${accordionId}`,
+          "aria-controls": `content-${uniqueId}`,
+          id: `trigger-${uniqueId}`,
           children: titleField || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Titre de l'accordéon", "block-development-examples")
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-        id: `content-${accordionId}`,
+        id: `content-${uniqueId}`,
         role: "region",
-        "aria-labelledby": `trigger-${accordionId}`,
+        "aria-labelledby": `trigger-${uniqueId}`,
         className: "pr-accordeon-content js-content",
         hidden: true,
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
@@ -325,7 +332,7 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/pr-accordeon","version":"0.1.0","title":"Pr Accordeon","category":"widgets","icon":"list-view","description":"Accordéon bloc ouvrable / fermable contenant du texte","example":{},"supports":{"html":false,"innerBlocks":true,"multiple":true},"textdomain":"pr-accordeon","editorScript":"file:./index.js","editorStyle":"file:./index.css","viewScript":"file:./view.js","style":"file:./style-index.css","attributes":{"titleField":{"type":"string","default":""},"headingLevel":{"type":"string","default":"3"}},"allowedBlocks":["core/categories","core/column","core/columns","core/comments-title","core/file","core/form","core/form-input","core/gallery","core/group","core/heading","core/html","core/image","core/list","core/list-item","core/navigation-link","core/paragraph","core/table"]}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/pr-accordeon","version":"0.1.0","title":"Pr Accordeon","category":"widgets","icon":"list-view","description":"Accordéon bloc ouvrable / fermable contenant du texte","example":{},"supports":{"html":false,"innerBlocks":true,"multiple":true},"textdomain":"pr-accordeon","editorScript":"file:./index.js","editorStyle":"file:./index.css","viewScript":"file:./view.js","style":"file:./style-index.css","attributes":{"titleField":{"type":"string","default":""},"headingLevel":{"type":"string","default":"3"},"uniqueId":{"type":"string","default":""}},"allowedBlocks":["core/categories","core/column","core/columns","core/comments-title","core/file","core/form","core/form-input","core/gallery","core/group","core/heading","core/html","core/image","core/list","core/list-item","core/navigation-link","core/paragraph","core/table"]}');
 
 /***/ })
 

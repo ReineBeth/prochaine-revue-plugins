@@ -1,13 +1,68 @@
 /*!****************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/editor.scss ***!
   \****************************************************************************************************************************************************************************************************************************************/
-/**
- * The following styles get applied inside the editor only.
- *
- * Replace them with your own styles or remove the file completely.
- */
-.wp-block-create-block-pr-recherche-pdf {
-  border: 1px dotted #f00;
+.pr-recherche {
+  border-radius: 8px;
+  background-color: #3a5a40;
+  color: #fff;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pr-recherche label {
+  font-size: 28px;
+  outline: 2px solid red;
+  /* padding-bottom: 8px; */
+}
+
+.pr-recherche-input {
+  position: relative;
+  display: inline-block;
+}
+
+.pr-recherche-input input {
+  height: 50px;
+  width: 100%;
+  border: 3px solid #478245;
+}
+
+.pr-recherche-icon {
+  position: absolute;
+  width: 24px;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  fill: #92d16e;
+}
+
+.pr-recherche-button {
+  font-weight: 600;
+  align-self: flex-end;
+  background-color: #92d16e;
+  border-radius: 8px;
+  filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0.25));
+  padding: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.pr-recherche-button:hover {
+  background-color: #478245;
+  color: #fff;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.pr-recherche.fullwidth {
+  background-color: transparent;
+  color: #000;
+  text-align: center;
+  margin-inline: auto;
+}
+
+.pr-recherche.fullwidth .pr-recherche-button {
+  align-self: center;
 }
 
 /*# sourceMappingURL=index.css.map*/
