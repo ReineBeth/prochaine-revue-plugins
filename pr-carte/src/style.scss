@@ -16,10 +16,16 @@
 
 .pr-carte-container,
 .wp-block-create-block-pr-carte {
-	@media (min-width: 900px) {
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+
+	@media (min-width: 800px) {
 		display: flex;
+		flex-direction: row;
 		flex-wrap: wrap;
-		gap: 24px;
+		justify-content: center;
 	}
 }
 
