@@ -1,65 +1,41 @@
-/**
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
- */
 import { __ } from "@wordpress/i18n";
-
-/**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#inspectorcontrols
- */
-import { InspectorControls, useBlockProps } from "@wordpress/block-editor";
-
-/**
- * Imports the necessary components that will be used to create
- * the user interface for the block's settings.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/components/panel/#panelbody
- * @see https://developer.wordpress.org/block-editor/reference-guides/components/text-control/
- * @see https://developer.wordpress.org/block-editor/reference-guides/components/toggle-control/
- */
-import { PanelBody, TextControl, ToggleControl } from "@wordpress/components";
-
-/**
- * Imports the useEffect React Hook. This is used to set an attribute when the
- * block is loaded in the Editor.
- *
- * @see https://react.dev/reference/react/useEffect
- */
+import {
+	InspectorControls,
+	useBlockProps,
+	MediaUpload,
+} from "@wordpress/block-editor";
+import {
+	PanelBody,
+	TextControl,
+	ToggleControl,
+	Button,
+	SelectControl,
+	RangeControl,
+} from "@wordpress/components";
+import { useSelect } from "@wordpress/data";
 import { useEffect } from "react";
 
-/**
- * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
- * Those files can contain any CSS code that gets applied to the editor.
- *
- * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
- */
-// import "./editor.scss";
-
-/**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
- *
- * @param {Object}   props               Properties passed to the function.
- * @param {Object}   props.attributes    Available block attributes.
- * @param {Function} props.setAttributes Function that updates individual attributes.
- *
- * @return {Element} Element to render.
- */
-
-import { MediaUpload } from "@wordpress/block-editor";
-import { Button } from "@wordpress/components";
-
 export default function Edit({ attributes, setAttributes }) {
-	const { tiles } = attributes;
+	const { tiles, mode, articlesCount, showAllArticles } = attributes;
 
-	// Ajouter une nouvelle tuile
+	// Récupérer les articles si mode dynamique
+	const articles = useSelect(
+		(select) => {
+			if (mode !== "dynamic") return null;
+
+			return select("core").getEntityRecords("postType", "pr_article", {
+				per_page: showAllArticles ? -1 : articlesCount,
+				_embed: true,
+				orderby: "date",
+				order: "desc",
+			});
+		},
+		[mode, articlesCount, showAllArticles],
+	);
+
+	console.log(articles);
+
+	// Fonctions existantes pour les tuiles statiques
 	function addTile() {
 		setAttributes({
 			tiles: [
@@ -69,14 +45,12 @@ export default function Edit({ attributes, setAttributes }) {
 		});
 	}
 
-	// Supprimer une tuile
 	function removeTile(index) {
 		const newTiles = [...tiles];
 		newTiles.splice(index, 1);
 		setAttributes({ tiles: newTiles });
 	}
 
-	// Mettre à jour une tuile
 	function updateTile(index, field, value) {
 		const newTiles = [...tiles];
 		newTiles[index][field] = value;
@@ -86,34 +60,64 @@ export default function Edit({ attributes, setAttributes }) {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={__("Settings", "block-development-examples")}>
-					{tiles.map((tile, index) => (
-						<div key={index} style={{ marginBottom: "20px" }}>
-							<TextControl
-								label={`Titre ${index + 1}`}
-								help="Phrase d'un maximum de 25 caractères"
-								value={tile.titleField}
-								onChange={(value) => updateTile(index, "titleField", value)}
-							/>
-							<TextControl
-								label={`Texte ${index + 1}`}
-								help="Phrase d'un maximum de 180 caractères"
-								value={tile.textField}
-								onChange={(value) => updateTile(index, "textField", value)}
-							/>
-							<TextControl
-								label={__("URL du lien", "block-development-examples")}
-								help={__("Entrez l'URL de la destination du lien")}
-								value={tile.linkUrl}
-								onChange={(value) => updateTile(index, "linkUrl", value)}
-							/>
+				<PanelBody title={__("Configuration générale", "pr-tuile")}>
+					<SelectControl
+						label={__("Mode d'affichage", "pr-tuile")}
+						value={mode}
+						options={[
+							{ label: "Statique (tuiles personnalisées)", value: "static" },
+							{ label: "Dynamique (articles)", value: "dynamic" },
+						]}
+						onChange={(value) => setAttributes({ mode: value })}
+					/>
+
+					{mode === "dynamic" && (
+						<>
 							<ToggleControl
-								label={__("Afficher l'image", "block-development-examples")}
-								checked={tile.showImage}
-								onChange={(value) => updateTile(index, "showImage", value)}
+								label={__("Afficher tous les articles", "pr-tuile")}
+								checked={showAllArticles}
+								onChange={(value) => setAttributes({ showAllArticles: value })}
 							/>
-							{tile.showImage && (
-								<>
+							{!showAllArticles && (
+								<RangeControl
+									label={__("Nombre d'articles à afficher", "pr-tuile")}
+									value={articlesCount}
+									onChange={(value) => setAttributes({ articlesCount: value })}
+									min={1}
+									max={12}
+								/>
+							)}
+						</>
+					)}
+				</PanelBody>
+
+				{mode === "static" && (
+					<PanelBody title={__("Configuration des tuiles", "pr-tuile")}>
+						{tiles.map((tile, index) => (
+							<div key={index} style={{ marginBottom: "20px" }}>
+								<TextControl
+									label={`Titre ${index + 1}`}
+									help="Phrase d'un maximum de 25 caractères"
+									value={tile.titleField}
+									onChange={(value) => updateTile(index, "titleField", value)}
+								/>
+								<TextControl
+									label={`Texte ${index + 1}`}
+									help="Phrase d'un maximum de 180 caractères"
+									value={tile.textField}
+									onChange={(value) => updateTile(index, "textField", value)}
+								/>
+								<TextControl
+									label={__("URL du lien", "pr-tuile")}
+									value={tile.linkUrl}
+									onChange={(value) => updateTile(index, "linkUrl", value)}
+								/>
+								<ToggleControl
+									label={__("Afficher l'image", "pr-tuile")}
+									checked={tile.showImage}
+									onChange={(value) => updateTile(index, "showImage", value)}
+								/>
+								{tile.showImage && (
 									<MediaUpload
 										onSelect={(media) => {
 											updateTile(index, "imageUrl", media.url);
@@ -125,10 +129,7 @@ export default function Edit({ attributes, setAttributes }) {
 											<Button
 												onClick={open}
 												variant="secondary"
-												style={{
-													display: "block",
-													marginBottom: "10px",
-												}}
+												style={{ marginBottom: "10px" }}
 											>
 												{tile.imageUrl
 													? "Changer l'image"
@@ -136,61 +137,72 @@ export default function Edit({ attributes, setAttributes }) {
 											</Button>
 										)}
 									/>
-									{tile.imageUrl && (
-										<img
-											src={tile.imageUrl}
-											alt={tile.imageAlt || `Image ${index + 1}`}
-											style={{ maxWidth: "100%", height: "auto" }}
-										/>
-									)}
-								</>
-							)}
-							<button
-								style={{
-									background: "red",
-									color: "white",
-									border: "none",
-									padding: "5px 10px",
-									cursor: "pointer",
-								}}
-								onClick={() => removeTile(index)}
-							>
-								Supprimer
-							</button>
-						</div>
-					))}
-					<button
-						style={{
-							background: "green",
-							color: "white",
-							border: "none",
-							padding: "10px 15px",
-							cursor: "pointer",
-							marginTop: "20px",
-						}}
-						onClick={addTile}
-					>
-						Ajouter une tuile
-					</button>
-				</PanelBody>
-			</InspectorControls>
-			<div class="pr-tuile-container" {...useBlockProps()}>
-				{tiles.map((tile, index) => (
-					<a key={index} class="pr-tuile-lien" href={tile.linkUrl}>
-						{tile.showImage && (
-							<div class="pr-tuile-lien-image">
-								<img
-									src={tile.imageUrl || "https://placecats.com/520/300"}
-									alt={tile.imageAlt || `Image ${index + 1}`}
-								/>
+								)}
+								<Button
+									isDestructive
+									onClick={() => removeTile(index)}
+									style={{ marginTop: "10px" }}
+								>
+									Supprimer
+								</Button>
 							</div>
-						)}
-						<div class="pr-tuile-lien-text">
-							<h3>{tile.titleField}</h3>
-							<p>{tile.textField}</p>
-						</div>
-					</a>
-				))}
+						))}
+						<Button isPrimary onClick={addTile} style={{ marginTop: "10px" }}>
+							Ajouter une tuile
+						</Button>
+					</PanelBody>
+				)}
+			</InspectorControls>
+
+			<div className="pr-tuile-container" {...useBlockProps()}>
+				{mode === "static" ? (
+					// Affichage des tuiles statiques
+					tiles.map((tile, index) => (
+						<a key={index} className="pr-tuile-lien" href={tile.linkUrl}>
+							{tile.showImage && (
+								<div className="pr-tuile-lien-image">
+									<img
+										src={tile.imageUrl || "https://placecats.com/520/300"}
+										alt={tile.imageAlt || `Image ${index + 1}`}
+									/>
+								</div>
+							)}
+							<div className="pr-tuile-lien-text">
+								<h3>{tile.titleField}</h3>
+								<p>{tile.textField}</p>
+							</div>
+						</a>
+					))
+				) : // Affichage des articles dynamiques
+				articles ? (
+					articles.map((article) => (
+						<a key={article.id} className="pr-tuile-lien" href={article?.link}>
+							{article.featured_media > 0 && (
+								<div className="pr-tuile-lien-image">
+									<img
+										src={
+											article._embedded?.["wp:featuredmedia"]?.[0]
+												?.source_url || "https://placecats.com/520/300"
+										}
+										alt={article.title.rendered}
+									/>
+								</div>
+							)}
+
+							<div className="pr-tuile-lien-text">
+								<h3>
+									{article.title.rendered || "Il n'y a pas de description :("}
+								</h3>
+								<p>
+									{article.acf?.article_description ||
+										"Il n'y a pas de description :("}
+								</p>
+							</div>
+						</a>
+					))
+				) : (
+					<p>Chargement des articles...</p>
+				)}
 			</div>
 		</>
 	);

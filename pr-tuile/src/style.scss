@@ -6,7 +6,8 @@
  */
 
 .pr-tuile-container,
-.wp-block-create-block-pr-tuile {
+.wp-block-create-block-pr-tuile,
+.wp-block-pr-tuile-pr-tuile {
 	@media (min-width: 900px) {
 		display: flex;
 		flex-wrap: wrap;

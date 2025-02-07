@@ -9,7 +9,8 @@
  */
 @media (min-width: 900px) {
   .pr-tuile-container,
-  .wp-block-create-block-pr-tuile {
+  .wp-block-create-block-pr-tuile,
+  .wp-block-pr-tuile-pr-tuile {
     display: flex;
     flex-wrap: wrap;
     gap: 24px;
