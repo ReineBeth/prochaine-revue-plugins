@@ -20,25 +20,71 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
 
 
 
 
 
 
+
+const AccordeonItem = ({
+  title,
+  headingLevel,
+  children,
+  id
+}) => {
+  const [isOpen, setIsOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(false);
+  const HeadingTag = `h${headingLevel}`;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+    className: "pr-accordeon-container",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(HeadingTag, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+        type: "button",
+        "aria-expanded": isOpen,
+        className: `pr-accordeon-trigger js-trigger ${isOpen ? "is-open" : ""}`,
+        "aria-controls": `content-${id}`,
+        id: `trigger-${id}`,
+        onClick: () => setIsOpen(!isOpen),
+        children: title
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+      id: `content-${id}`,
+      role: "region",
+      "aria-labelledby": `trigger-${id}`,
+      className: `pr-accordeon-content js-content ${isOpen ? "is-open" : ""}`,
+      hidden: !isOpen,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+        className: "pr-accordeon-content-inner",
+        children: children
+      })
+    })]
+  });
+};
 function Edit({
   attributes,
   setAttributes
 }) {
-  const [isOpen, setIsOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(false);
   const {
     titleField,
-    headingLevel
+    headingLevel,
+    mode,
+    authorCount,
+    showAllAuthors
   } = attributes;
-  const now = Date.now();
+  const authors = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_4__.useSelect)(select => {
+    if (mode !== "dynamic") return null;
+    return select("core").getEntityRecords("taxonomy", "pr-auteurs", {
+      per_page: showAllAuthors ? -1 : authorCount,
+      _embed: true,
+      orderby: "name",
+      order: "asc"
+    });
+  }, [mode, authorCount, showAllAuthors]);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: "pr-accordeon"
   });
@@ -48,25 +94,52 @@ function Edit({
     templateLock: false,
     renderAppender: _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.ButtonBlockAppender
   });
-  const toggleAccordeon = () => {
-    setIsOpen(prevState => !prevState);
-  };
-  const accordionId = `uid-${now}`;
-  const HeadingTag = `h${headingLevel}`;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
-        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Paramètres de l'accordéon", "block-development-examples"),
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Titre de l'accordéon", "block-development-examples"),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Maximum 25 caractères", "block-development-examples"),
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Configuration générale", "pr-accordeon"),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Mode d'affichage", "pr-accordeon"),
+          value: mode,
+          options: [{
+            label: "Statique (accordéon personnalisé)",
+            value: "static"
+          }, {
+            label: "Dynamique (auteurs)",
+            value: "dynamic"
+          }],
+          onChange: value => setAttributes({
+            mode: value
+          })
+        }), mode === "dynamic" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Afficher tous les auteurs", "pr-accordeon"),
+            checked: showAllAuthors,
+            onChange: value => setAttributes({
+              showAllAuthors: value
+            })
+          }), !showAllAuthors && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RangeControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Nombre d'auteurs à afficher", "pr-accordeon"),
+            value: authorCount,
+            onChange: value => setAttributes({
+              authorCount: value
+            }),
+            min: 1,
+            max: 12
+          })]
+        })]
+      }), mode === "static" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+        title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Paramètres de l'accordéon", "pr-accordeon"),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Titre de l'accordéon", "pr-accordeon"),
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Maximum 25 caractères", "pr-accordeon"),
           value: titleField || "",
           onChange: value => setAttributes({
             titleField: value
           }),
           maxLength: 25
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Niveau de titre", "block-development-examples"),
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Niveau de titre", "pr-accordeon"),
           value: headingLevel,
           options: [{
             label: "Titre 2",
@@ -84,33 +157,27 @@ function Edit({
           onChange: value => setAttributes({
             headingLevel: value
           }),
-          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Choisissez le niveau hiérarchique du titre", "block-development-examples")
+          help: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Choisissez le niveau hiérarchique du titre", "pr-accordeon")
         })]
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
       ...blockProps,
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-        className: "pr-accordeon-container",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(HeadingTag, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
-            type: "button",
-            "aria-expanded": isOpen,
-            className: `pr-accordeon-trigger js-trigger ${isOpen ? "is-open" : ""}`,
-            "aria-controls": `content-${accordionId}`,
-            id: `trigger-${accordionId}`,
-            onClick: toggleAccordeon,
-            children: titleField || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Titre de l'accordéon", "block-development-examples")
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-          id: `content-${accordionId}`,
-          role: "region",
-          "aria-labelledby": `trigger-${accordionId}`,
-          className: `pr-accordeon-content js-content ${isOpen ? "is-open" : ""}`,
-          hidden: !isOpen,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-            ...innerBlocksProps
-          })
-        })]
+      children: mode === "static" ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(AccordeonItem, {
+        title: titleField || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Titre de l'accordéon", "pr-accordeon"),
+        headingLevel: headingLevel,
+        id: "static",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+          ...innerBlocksProps
+        })
+      }) : authors ? authors.map(author => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(AccordeonItem, {
+        title: author.name,
+        headingLevel: headingLevel,
+        id: author.id,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("p", {
+          children: ["Articles de ", author.name]
+        })
+      }, author.id)) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
+        children: "Chargement des auteurs..."
       })
     })]
   });
@@ -180,7 +247,7 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Save)
+/* harmony export */   "default": () => (/* binding */ save)
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
@@ -191,12 +258,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function Save({
+function save({
   attributes
 }) {
   const {
     titleField,
-    headingLevel
+    headingLevel,
+    mode,
+    authorCount,
+    showAllAuthors
   } = attributes;
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save({
     className: "pr-accordeon"
@@ -205,30 +275,44 @@ function Save({
     className: "pr-accordeon-content-inner"
   });
   const HeadingTag = `h${headingLevel}`;
-  const accordionId = "pr-accordion-" + Date.now();
+
+  // Pour le mode statique uniquement, car le mode dynamique sera rendu côté serveur
+  if (mode === "static") {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      ...blockProps,
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "pr-accordeon-container",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(HeadingTag, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+            type: "button",
+            "aria-expanded": "false",
+            className: "pr-accordeon-trigger js-trigger",
+            "aria-controls": "content-static",
+            id: "trigger-static",
+            children: titleField || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Titre de l'accordéon", "pr-accordeon")
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          id: "content-static",
+          role: "region",
+          "aria-labelledby": "trigger-static",
+          className: "pr-accordeon-content js-content",
+          hidden: true,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+            ...innerBlocksProps
+          })
+        })]
+      })
+    });
+  }
+
+  // Pour le mode dynamique, on retourne juste un conteneur vide
+  // Le contenu sera généré côté serveur via le render_callback
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
     ...blockProps,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "pr-accordeon-container",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(HeadingTag, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-          type: "button",
-          "aria-expanded": "false",
-          className: "pr-accordeon-trigger js-trigger",
-          "aria-controls": `content-${accordionId}`,
-          id: `trigger-${accordionId}`,
-          children: titleField || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)("Titre de l'accordéon", "block-development-examples")
-        })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-        id: `content-${accordionId}`,
-        role: "region",
-        "aria-labelledby": `trigger-${accordionId}`,
-        className: "pr-accordeon-content js-content",
-        hidden: true,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-          ...innerBlocksProps
-        })
-      })]
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      className: "pr-accordeon-dynamic",
+      "data-show-all": showAllAuthors,
+      "data-count": authorCount
     })
   });
 }
@@ -299,6 +383,16 @@ module.exports = window["wp"]["components"];
 
 /***/ }),
 
+/***/ "@wordpress/data":
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["data"];
+
+/***/ }),
+
 /***/ "@wordpress/element":
 /*!*********************************!*\
   !*** external ["wp","element"] ***!
@@ -325,7 +419,7 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/pr-accordeon","version":"0.1.0","title":"Pr Accordeon","category":"widgets","icon":"list-view","description":"Accordéon bloc ouvrable / fermable contenant du texte","example":{},"supports":{"html":false,"innerBlocks":true,"multiple":true},"textdomain":"pr-accordeon","editorScript":"file:./index.js","editorStyle":"file:./index.css","viewScript":"file:./view.js","style":"file:./style-index.css","attributes":{"titleField":{"type":"string","default":""},"headingLevel":{"type":"string","default":"3"}},"allowedBlocks":["core/categories","core/column","core/columns","core/comments-title","core/file","core/form","core/form-input","core/gallery","core/group","core/heading","core/html","core/image","core/list","core/list-item","core/navigation-link","core/paragraph","core/table"]}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/pr-accordeon","version":"0.1.0","title":"Pr Accordeon","category":"widgets","icon":"list-view","description":"Accordéon bloc ouvrable / fermable contenant du texte","example":{},"supports":{"html":false,"innerBlocks":true,"multiple":true},"textdomain":"pr-accordeon","editorScript":"file:./index.js","editorStyle":"file:./index.css","viewScript":"file:./view.js","style":"file:./style-index.css","attributes":{"titleField":{"type":"string","default":""},"headingLevel":{"type":"string","default":"3"},"mode":{"type":"string","default":"static"},"authorCount":{"type":"number","default":5},"showAllAuthors":{"type":"boolean","default":false}},"allowedBlocks":["core/categories","core/column","core/columns","core/comments-title","core/file","core/form","core/form-input","core/gallery","core/group","core/heading","core/html","core/image","core/list","core/list-item","core/navigation-link","core/paragraph","core/table"]}');
 
 /***/ })
 

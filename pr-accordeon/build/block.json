@@ -26,6 +26,18 @@
     "headingLevel": {
       "type": "string",
       "default": "3"
+    },
+    "mode": {
+      "type": "string",
+      "default": "static"
+    },
+    "authorCount": {
+      "type": "number",
+      "default": 5
+    },
+    "showAllAuthors": {
+      "type": "boolean",
+      "default": false
     }
   },
   "allowedBlocks": [
