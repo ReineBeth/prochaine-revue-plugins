@@ -57,45 +57,48 @@ function render_accordeon_block($attributes, $content) {
             );
 
             $output .= '<div class="pr-accordeon-content-inner">';
+			// Ajouter la description de l'auteur
+			if (!empty($term->description)) {
+				$output .= '<p class="author-description">';
+				$output .= wp_kses_post($term->description);
+				$output .= '</p>';
+			}
 
-            // Articles de l'auteur
-            $args = [
-                'post_type' => 'articles',
-                'posts_per_page' => -1,
-                'tax_query' => [
-                    [
-                        'taxonomy' => 'pr-auteurs',
-                        'field' => 'term_id',
-                        'terms' => $term->term_id
-                    ]
-                ]
-            ];
+// Articles de l'auteur
+$args = [
+    'post_type' => 'pr_article',
+    'posts_per_page' => -1,
+    'tax_query' => [
+        [
+            'taxonomy' => 'pr-auteurs',
+            'field' => 'term_id',
+            'terms' => $term->term_id,
+            'operator' => 'IN'
+        ]
+    ],
+    'orderby' => 'date',
+    'order' => 'DESC'
+];
 
-            $articles_query = new WP_Query($args);
+$articles_query = new WP_Query($args);
 
-            if ($articles_query->have_posts()) {
-                $output .= '<ul class="author-articles">';
-                while ($articles_query->have_posts()) {
-                    $articles_query->the_post();
-                    $output .= '<li>';
-                    $output .= '<a href="' . get_permalink() . '">' . get_the_title() . '</a>';
+if ($articles_query->have_posts()) {
+    $output .= '<h4>Liste des articles</h4>';
+    $output .= '<ul class="author-articles">';
+    while ($articles_query->have_posts()) {
+        $articles_query->the_post();
+        $output .= '<li>';
+        $output .= '<a href="' . get_permalink() . '">' . get_the_title() . '</a>';
+        $output .= '</li>';
+    }
+    $output .= '</ul>';
+    wp_reset_postdata();
+} else {
+    $output .= '<p>Aucun article pour cet auteur</p>';
+}
 
-                    $pdf_url = get_field('article_pdf');
-                    if ($pdf_url) {
-                        $output .= ' - <a href="' . esc_url($pdf_url) . '">PDF</a>';
-                    }
-
-                    $output .= '</li>';
-                }
-                $output .= '</ul>';
-            } else {
-                $output .= '<p>Aucun article pour cet auteur</p>';
-            }
-
-            wp_reset_postdata();
-
-            $output .= '</div></div></div>';
-        }
+            $output .= '</div></div></div>'; // Fermeture des divs d'accordéon
+        } // Fin de la boucle foreach
     } else {
         $output .= '<p>Aucun auteur trouvé</p>';
     }
